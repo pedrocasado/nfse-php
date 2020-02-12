@@ -136,9 +136,13 @@ class SoapHandler implements SoapInterface
     {
         $resultArr = $this->xmlEncoder->decode($responseXml, '');
 
-        if (isset($resultArr['ListaMensagemRetorno']) and !empty($resultArr['ListaMensagemRetorno']['MensagemRetorno'])) {
-            foreach ($resultArr['ListaMensagemRetorno'] as $msgRetorno) {
-                $errors[] = $msgRetorno['Codigo'].' - '.$msgRetorno['Mensagem'];
+        if (isset($resultArr['ListaMensagemRetorno'])) {
+            if (isset($resultArr['ListaMensagemRetorno']['MensagemRetorno']['Codigo'])) {
+                $errors[] = $resultArr['ListaMensagemRetorno']['MensagemRetorno']['Codigo'].' - '.$resultArr['ListaMensagemRetorno']['MensagemRetorno']['Mensagem'];
+            } else {
+                foreach ($resultArr['ListaMensagemRetorno']['MensagemRetorno'] as $msgRetorno) {
+                    $errors[] = $msgRetorno['Codigo'].' - '.$msgRetorno['Mensagem'];
+                }
             }
 
             return $errors;
