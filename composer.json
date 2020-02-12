@@ -1,0 +1,43 @@
+{
+    "name": "pedrocasado/nfse-php",
+    "type": "library",
+    "description": "Lib to communicate with web services to generate NFS-e",
+    "keywords": [
+        "nfse",
+        "nfse",
+        "nfse-php"
+    ],
+    "license": [
+        "LGPL-3.0-or-later",
+        "GPL-3.0-or-later",
+        "MIT"
+    ],
+    "authors": [
+        {
+            "name": "Pedro Casado",
+            "email": "pdr33n@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">= 7.1",
+        "ext-xml": "*",
+        "ext-openssl": "*",
+        "vanilla/garden-schema": "^2.2",
+        "symfony/serializer": "^5.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.16"
+    },
+    "autoload": {
+        "psr-4": {
+            "NFSePHP\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "v1.0": "1.0-dev"
+        }
+    },
+    "minimum-stability": "stable"
+}
