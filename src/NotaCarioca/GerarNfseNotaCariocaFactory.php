@@ -142,12 +142,6 @@ class GerarNfseNotaCariocaFactory extends NotaCariocaFactoryBase implements XmlF
         // clean up encode tag added by encoder
         $xml = str_replace('<?xml version="1.0"?>', '', $xml);
 
-        // Sign InfRps (NotaCarioca doesnt require signatures, but if you send they will validate)
-        // $xmlSigned = Signer::sign($this->getCertificate(), $xml, 'InfRps', 'Id');
-
-        // clean up encode tag added by signer - <?xml version="1.0" encoding="UTF-8"
-        // $xmlSigned = str_replace('<?xml version="1.0" encoding="UTF-8"', '', $xmlSigned);
-
         $content = '<GerarNfseEnvio xmlns="http://notacarioca.rio.gov.br/WSNacional/XSD/1/nfse_pcrj_v01.xsd">'.$xml.'</GerarNfseEnvio>';
 
         // Envelope request
