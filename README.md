@@ -57,7 +57,7 @@ $rps = [
                 // 'Cnpj' => '111',
             ],
         ],
-        'Razao Social' => 'Fulano de tal',
+        'RazaoSocial' => 'Fulano de tal',
         'Endereco' => [
             'Endereco' => 'Rua 1111',
             'Numero' => '1',
