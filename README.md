@@ -2,6 +2,12 @@
 
 Lib to communicate with SOAP web services and generate NFS-e (Nota Fiscal de Serviços Eletrônica). Support to Nota Carioca only as of today.
 
+### Operations Supported
+
+-   Nota Carioca
+    -   GerarNfse
+    -   ConsultarNfsePorRps
+
 # Install
 
 ```bash
