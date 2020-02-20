@@ -7,6 +7,7 @@ Lib to communicate with SOAP web services and generate NFS-e (Nota Fiscal de Ser
 -   Nota Carioca
     -   GerarNfse
     -   ConsultarNfsePorRps
+    -   ConsultarNfse
 
 # Install
 
@@ -19,6 +20,8 @@ composer require pedrocasado/nfse-php
 Check examples/ folder
 
 You must have a valid certificate to use Nota Carioca staging environment.
+
+### GerarNfse
 
 ```php
 use NFSePHP\NotaCarioca\GerarNfseNotaCariocaFactory;
@@ -145,9 +148,51 @@ array (size=1)
 
 ```
 
+### ConsultaNfse
+
+```php
+use NFSePHP\NotaCarioca\ConsultarNfseFactory;
+use NFSePHP\NotaCarioca\SoapHandler;
+
+$rps = [
+    'Prestador' => [
+        'Cnpj' => '10738989000199',
+        'InscricaoMunicipal' => '04409477',
+    ],
+    'PeriodoEmissao' => [
+        'DataInicial' => '2020-01-30',
+        'DataFinal' => '2020-01-30',
+    ],
+    'Tomador' => [
+        'CpfCnpj' => [
+            'Cpf' => '11911464728',
+        ],
+    ],
+];
+
+$env = 'dev'; // dev or prod
+$notaCariocaConsulta = new ConsultarNfseFactory($rps, $env);
+
+$soapHandler = new SoapHandler(['cert_path' => '/path/to/valid/cert.pfx', 'cert_pass' => 'certpassword']);
+
+// Send SOAP xml
+$response = $soapHandler->send($notaCariocaConsulta);
+
+if ($soapHandler->isSuccess($response)) {
+    $nfs = $notaCariocaConsulta->formatSuccessResponse($response);
+
+    var_dump($nfs);
+} else {
+    $errors = $soapHandler->getErrors($response);
+
+    var_dump($errors);
+}
+
+```
+
 # TODO's
 
--   Add missing operations (CancelarNfse, ConsultaNfse, ConsultarLoteRps, ConsultarSituacaoLoteRps, EnviarLoteRps)
+-   Add missing operations (CancelarNfse, ConsultarLoteRps, ConsultarSituacaoLoteRps, EnviarLoteRps)
 -   Add tests
 
 Inspired by https://github.com/nfephp-org
