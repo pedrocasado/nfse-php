@@ -156,8 +156,8 @@ use NFSePHP\NotaCarioca\SoapHandler;
 
 $rps = [
     'Prestador' => [
-        'Cnpj' => '10738989000199',
-        'InscricaoMunicipal' => '04409477',
+        'Cnpj' => '11111111111111',
+        'InscricaoMunicipal' => '11111111',
     ],
     'PeriodoEmissao' => [
         'DataInicial' => '2020-01-30',
@@ -165,7 +165,7 @@ $rps = [
     ],
     'Tomador' => [
         'CpfCnpj' => [
-            'Cpf' => '11911464728',
+            'Cpf' => '1111111111',
         ],
     ],
 ];
