@@ -113,6 +113,7 @@ class GerarNfseNotaCariocaFactory extends NotaCariocaFactoryBase implements XmlF
                 'OptanteSimplesNacional' => $this->rps['OptanteSimplesNacional'],
                 'IncentivadorCultural' => $this->rps['IncentivadorCultural'],
                 'Status' => $this->rps['Status'],
+                // @TODO Set parameters one by one to remove the need to worry about order
                 // Order Matters (Servico must be before Prestador)
                 'Servico' => [
                     // Order Matters (Valores must be before ItemListaServico)
