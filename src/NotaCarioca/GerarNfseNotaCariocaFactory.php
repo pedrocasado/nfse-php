@@ -31,13 +31,7 @@ class GerarNfseNotaCariocaFactory extends NotaCariocaFactoryBase implements XmlF
     {
         $resultArr = $this->getEncoder()->decode($responseXml, '');
 
-        $responseArr['nfse'] = [
-            'Numero' => $resultArr['CompNfse']['Nfse']['InfNfse']['Numero'],
-            'CodigoVerificacao' => $resultArr['CompNfse']['Nfse']['InfNfse']['CodigoVerificacao'],
-            'DataEmissao' => $resultArr['CompNfse']['Nfse']['InfNfse']['DataEmissao'],
-            'IdentificacaoRps' => $resultArr['CompNfse']['Nfse']['InfNfse']['IdentificacaoRps'],
-            'DataEmissaoRps' => $resultArr['CompNfse']['Nfse']['InfNfse']['DataEmissaoRps'],
-        ];
+        $responseArr['nfse'] = $resultArr['CompNfse']['Nfse']['InfNfse'];
 
         return $responseArr;
     }
