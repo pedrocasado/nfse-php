@@ -10,6 +10,9 @@ $rps = [
         'Numero' => 119,
         'Serie' => 'A',
         'Tipo' => 1,
+        // 1 - RPS
+        // 2 – Nota Fiscal Conjugada (Mista)
+        // 3 – Cupom
     ],
     'DataEmissao' => date('Y-m-d').'T'.date('H:i:s'),
     'NaturezaOperacao' => 1,
@@ -34,25 +37,25 @@ $rps = [
 
     'Prestador' => [
         'Cnpj' => '111111',
-        'InscricaoMunicipal' => '11111',
+        'InscricaoMunicipal' => '11111', // optional
     ],
 
     'Tomador' => [
-        'IdentificacaoTomador' => [
+        'IdentificacaoTomador' => [ // optional
             'CpfCnpj' => [
                 'Cpf' => '111',
                 // 'Cnpj' => '111',
             ],
         ],
-        'RazaoSocial' => 'Fulano de tal',
-        'Endereco' => [
-            'Endereco' => 'Rua 1111',
-            'Numero' => '1',
-            'Complemento' => 'ap 1',
-            'Bairro' => '1',
-            'CodigoMunicipio' => 1111111,
-            'Uf' => 'RJ',
-            'Cep' => 11111111,
+        'RazaoSocial' => 'Fulano de tal', // optional
+        'Endereco' => [ // optional
+            'Endereco' => 'Rua 1111', // optional
+            'Numero' => '1', // optional
+            'Complemento' => 'ap 1', // optional
+            'Bairro' => '1', // optional
+            'CodigoMunicipio' => 1111111, // optional
+            'Uf' => 'RJ', // optional
+            'Cep' => 11111111, // optional
         ],
     ],
 

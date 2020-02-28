@@ -78,17 +78,17 @@ class GerarNfseNotaCariocaFactory extends NotaCariocaFactoryBase implements XmlF
                     'CodigoMunicipio',
                 ],
                 'Tomador' => [
-                    'IdentificacaoTomador' => [
+                    'IdentificacaoTomador?' => [
                         'CpfCnpj' => ['Cpf?', 'Cnpj?'],
                     ],
                     'RazaoSocial?',
-                    'Endereco' => ['Endereco', 'Numero', 'Complemento', 'Bairro', 'CodigoMunicipio', 'Uf', 'Cep'],
+                    'Endereco?' => ['Endereco?', 'Numero?', 'Complemento?', 'Bairro?', 'CodigoMunicipio?', 'Uf?', 'Cep?'],
                 ],
-                'Prestador' => ['Cnpj', 'InscricaoMunicipal'],
+                'Prestador' => ['Cnpj', 'InscricaoMunicipal?'],
                 'IntermediarioServico?' => [
                     'CpfCnpj' => ['Cpf?', 'Cnpj?'],
                     'RazaoSocial',
-                    'InscricaoMunicipal',
+                    'InscricaoMunicipal?',
                 ],
                 'ConstrucaoCivil?' => ['CodigoObra', 'Art'],
             ],
