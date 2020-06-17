@@ -7,11 +7,11 @@ interface SoapInterface
     /**
      * Send request to Web Service.
      *
-     * @param XmlFactoryInterface $notaCariocaFactory
+     * @param XmlInterface $notaCariocaFactory
      *
      * @return void
      */
-    public function send(XmlFactoryInterface $xml): string;
+    public function send(XmlInterface $xml): string;
 
     /**
      * Check if response has success xml.

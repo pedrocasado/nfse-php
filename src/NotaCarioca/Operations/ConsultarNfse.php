@@ -4,13 +4,12 @@ namespace NFSePHP\NotaCarioca\Operations;
 
 use Garden\Schema\Schema;
 use Garden\Schema\ValidationException;
-use NFSePHP\XmlFactoryInterface;
-use NFSePHP\NotaCarioca\NotaCariocaBase;
+use NFSePHP\NotaCarioca\NotaCariocaOperationBase;
 
 /**
  * Class to generate XML to the ConsultarNfse Web Service operation.
  */
-class ConsultarNfse extends NotaCariocaBase implements XmlFactoryInterface
+class ConsultarNfse extends NotaCariocaOperationBase
 {
     public function __construct(string $env = 'dev', array $rps = [])
     {

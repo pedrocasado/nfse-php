@@ -3,7 +3,7 @@
 namespace NFSePHP\NotaCarioca;
 
 use NFSePHP\SoapInterface;
-use NFSePHP\XmlFactoryInterface;
+use NFSePHP\XmlInterface;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
 class SoapHandler implements SoapInterface
@@ -44,7 +44,7 @@ class SoapHandler implements SoapInterface
     /**
      * {@inheritdoc}
      */
-    public function send(XmlFactoryInterface $notaCariocaFactory): string
+    public function send(XmlInterface $notaCariocaFactory): string
     {
         $operation = $notaCariocaFactory->getOperation();
         $url = $notaCariocaFactory->getEndpointUrl($notaCariocaFactory->getEnv());

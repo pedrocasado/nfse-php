@@ -2,7 +2,7 @@
 
 namespace NFSePHP;
 
-interface XmlFactoryInterface
+interface XmlInterface
 {
     /**
      * Get the xml with envelope ready to send to the Web Service.

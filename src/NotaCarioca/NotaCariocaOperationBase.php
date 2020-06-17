@@ -2,10 +2,10 @@
 
 namespace NFSePHP\NotaCarioca;
 
-use NFSePHP\XmlFactoryInterface;
+use NFSePHP\XmlInterface;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
-abstract class NotaCariocaBase implements XmlFactoryInterface
+abstract class NotaCariocaOperationBase implements XmlInterface
 {
     const BASE_ACTION_URL = 'http://notacarioca.rio.gov.br/';
 
