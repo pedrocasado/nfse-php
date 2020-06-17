@@ -1,19 +1,20 @@
 <?php
 
-namespace NFSePHP\NotaCarioca;
+namespace NFSePHP\NotaCarioca\Operations;
 
 use Garden\Schema\Schema;
 use Garden\Schema\ValidationException;
 use NFSePHP\XmlFactoryInterface;
+use NFSePHP\NotaCarioca\NotaCariocaBase;
 
 /**
- * Class to generate XML to the ConsultarNfsePorRps Web Service operation.
+ * Class to generate XML to the ConsultarNfse Web Service operation.
  */
-class ConsultarNfsePorRpsFactory extends NotaCariocaFactoryBase implements XmlFactoryInterface
+class ConsultarNfse extends NotaCariocaBase implements XmlFactoryInterface
 {
-    public function __construct(array $rps, string $env = 'dev')
+    public function __construct(string $env = 'dev', array $rps = [])
     {
-        parent::__construct($rps, $env);
+        parent::__construct($env, $rps);
     }
 
     /**
@@ -21,7 +22,7 @@ class ConsultarNfsePorRpsFactory extends NotaCariocaFactoryBase implements XmlFa
      */
     public function getOperation(): string
     {
-        return 'ConsultarNfsePorRps';
+        return 'ConsultarNfse';
     }
 
     /**
@@ -31,7 +32,12 @@ class ConsultarNfsePorRpsFactory extends NotaCariocaFactoryBase implements XmlFa
     {
         $resultArr = $this->getEncoder()->decode($responseXml, '');
 
-        $responseArr['nfse'] = $resultArr['CompNfse']['Nfse']['InfNfse'];
+        $responseArr = [];
+        if (isset($resultArr['ListaNfse']) and isset($resultArr['ListaNfse']['CompNfse'])) {
+            foreach ($resultArr['ListaNfse']['CompNfse'] as $nfse) {
+                $responseArr[] = $nfse['Nfse']['InfNfse'];
+            }
+        }
 
         return $responseArr;
     }
@@ -42,32 +48,40 @@ class ConsultarNfsePorRpsFactory extends NotaCariocaFactoryBase implements XmlFa
     public function getSchemaStructure(): array
     {
         return [
-            'ConsultarNfseRpsEnvio' => [
-                'IdentificacaoRps' => ['Numero', 'Serie', 'Tipo'],
+            'ConsultarNfseEnvio' => [
                 'Prestador' => ['Cnpj', 'InscricaoMunicipal'],
+                'PeriodoEmissao' => ['DataInicial', 'DataFinal'],
+                'Tomador' => [
+                    'CpfCnpj' => [
+                        'Cpf?',
+                        'Cnpj?',
+                    ],
+                ],
             ],
         ];
     }
 
     /**
      * {@inheritdoc}
+     * @throws \Exception
      */
     public function getEnvelopeXml(): string
     {
         $structure = $this->getSchemaStructure();
 
         $rps = [
-            'ConsultarNfseRpsEnvio' => [
+            'ConsultarNfseEnvio' => [
                 '@xmlns' => 'http://www.abrasf.org.br/ABRASF/arquivos/nfse.xsd',
-                'IdentificacaoRps' => $this->rps['IdentificacaoRps'],
                 'Prestador' => $this->rps['Prestador'],
+                'PeriodoEmissao' => $this->rps['PeriodoEmissao'],
+                'Tomador' => $this->rps['Tomador'],
             ],
         ];
 
         // Validate array based on structure
         try {
             $schema = Schema::parse($structure);
-            $valid = $schema->validate($rps);
+            $schema->validate($rps);
         } catch (ValidationException $ex) {
             throw new \Exception(__FILE__.':'.__LINE__.' - '.$ex->getMessage());
         }

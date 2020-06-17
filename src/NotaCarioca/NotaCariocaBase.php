@@ -5,7 +5,7 @@ namespace NFSePHP\NotaCarioca;
 use NFSePHP\XmlFactoryInterface;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
-abstract class NotaCariocaFactoryBase implements XmlFactoryInterface
+abstract class NotaCariocaBase implements XmlFactoryInterface
 {
     const BASE_ACTION_URL = 'http://notacarioca.rio.gov.br/';
 
@@ -24,11 +24,30 @@ abstract class NotaCariocaFactoryBase implements XmlFactoryInterface
      */
     protected $encoder;
 
-    public function __construct(array $rps, string $env = 'dev')
+    public function __construct(string $env = 'dev', array $rps = [])
     {
         $this->rps = $rps;
         $this->env = $env;
         $this->encoder = new XmlEncoder();
+    }
+
+    /**
+     * Sets rps array
+     *
+     * @param $rps
+     */
+    public function setRps(array $rps)
+    {
+        $this->rps = $rps;
+    }
+
+    /**
+     * Sets env
+     *
+     * @param string $env
+     */
+    public function setEnv(string $env) {
+        $this->env = $env;
     }
 
     /**
@@ -42,9 +61,9 @@ abstract class NotaCariocaFactoryBase implements XmlFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getEndpointUrl(string $env = 'dev'): string
+    public function getEndpointUrl(): string
     {
-        $hml = 'prod' != $env ? 'homologacao.' : '';
+        $hml = 'prod' != $this->env ? 'homologacao.' : '';
 
         return 'https://'.$hml.'notacarioca.rio.gov.br/WSNacional/nfse.asmx';
     }
@@ -70,6 +89,7 @@ abstract class NotaCariocaFactoryBase implements XmlFactoryInterface
     /**
      * Add SOAP envelope to XML.
      *
+     * @param string $content
      * @return string
      */
     public function addEnvelope(string &$content)

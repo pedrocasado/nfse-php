@@ -1,19 +1,20 @@
 <?php
 
-namespace NFSePHP\NotaCarioca;
+namespace NFSePHP\NotaCarioca\Operations;
 
 use Garden\Schema\Schema;
 use Garden\Schema\ValidationException;
 use NFSePHP\XmlFactoryInterface;
+use NFSePHP\NotaCarioca\NotaCariocaBase;
 
 /**
  * Class to generate XML to the ConsultarNfse Web Service operation.
  */
-class CancelarNfseFactory extends NotaCariocaFactoryBase implements XmlFactoryInterface
+class CancelarNfse extends NotaCariocaBase implements XmlFactoryInterface
 {
-    public function __construct(array $rps, string $env = 'dev')
+    public function __construct(string $env = 'dev', array $rps = [])
     {
-        parent::__construct($rps, $env);
+        parent::__construct($env, $rps);
     }
 
     /**
@@ -65,6 +66,7 @@ class CancelarNfseFactory extends NotaCariocaFactoryBase implements XmlFactoryIn
 
     /**
      * {@inheritdoc}
+     * @throws \Exception
      */
     public function getEnvelopeXml(): string
     {
@@ -86,7 +88,7 @@ class CancelarNfseFactory extends NotaCariocaFactoryBase implements XmlFactoryIn
         // Validate array based on structure
         try {
             $schema = Schema::parse($structure);
-            $valid = $schema->validate($rps);
+            $schema->validate($rps);
         } catch (ValidationException $ex) {
             throw new \Exception(__FILE__.':'.__LINE__.' - '.$ex->getMessage());
         }

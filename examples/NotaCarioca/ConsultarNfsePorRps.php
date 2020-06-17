@@ -2,7 +2,7 @@
 
 require __DIR__.'/../../vendor/autoload.php';
 
-use NFSePHP\NotaCarioca\ConsultarNfsePorRpsFactory;
+use NFSePHP\NotaCarioca\NotaCariocaOperationFactory;
 use NFSePHP\NotaCarioca\SoapHandler;
 
 $rps = [
@@ -18,15 +18,15 @@ $rps = [
 ];
 
 $env = 'dev'; // dev or prod
-$notaCariocaConsulta = new ConsultarNfsePorRpsFactory($rps, $env);
+$consultarRpsOperation = (new NotaCariocaOperationFactory())->createOperation('consultar-por-rps', $env, $rps);
 
 $soapHandler = new SoapHandler(['cert_path' => '/path/to/valid/cert.pfx', 'cert_pass' => 'certpassword']);
 
 // Send SOAP xml
-$response = $soapHandler->send($notaCariocaConsulta);
+$response = $soapHandler->send($consultarRpsOperation);
 
 if ($soapHandler->isSuccess($response)) {
-    $nfs = $notaCariocaConsulta->formatSuccessResponse($response);
+    $nfs = $consultarRpsOperation->formatSuccessResponse($response);
 
     var_dump($nfs);
 } else {

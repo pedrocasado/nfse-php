@@ -2,7 +2,7 @@
 
 require __DIR__.'/../../vendor/autoload.php';
 
-use NFSePHP\NotaCarioca\CancelarNfseFactory;
+use NFSePHP\NotaCarioca\NotaCariocaOperationFactory;
 use NFSePHP\NotaCarioca\SoapHandler;
 
 $nfse = [
@@ -20,15 +20,15 @@ $nfse = [
 ];
 
 $env = 'dev'; // dev or prod
-$notaCariocaCancel = new CancelarNfseFactory($nfse, $env);
+$cancelOperation = (new NotaCariocaOperationFactory())->createOperation('cancelar', $env, $nfse);
 
 $soapHandler = new SoapHandler(['cert_path' => '/path/to/valid/cert.pfx', 'cert_pass' => 'certpassword']);
 
 // Send SOAP xml
-$response = $soapHandler->send($notaCariocaCancel);
+$response = $soapHandler->send($cancelOperation);
 
 if ($soapHandler->isSuccess($response)) {
-    $nfs = $notaCariocaCancel->formatSuccessResponse($response);
+    $nfs = $cancelOperation->formatSuccessResponse($response);
 
     var_dump($nfs);
 } else {

@@ -25,7 +25,7 @@ You must have a valid certificate to use Nota Carioca staging environment.
 ### GerarNfse
 
 ```php
-use NFSePHP\NotaCarioca\GerarNfseNotaCariocaFactory;
+use NFSePHP\NotaCarioca\NotaCariocaFactory;
 use NFSePHP\NotaCarioca\SoapHandler;
 
 $rps = [
@@ -120,15 +120,17 @@ $rps = [
 ];
 
 $env = 'dev'; // dev - prod
-$notaCarioca = new GerarNfseNotaCariocaFactory($rps, $env);
+$notaCariocaFactory = new NotaCariocaFactory();
+$gerarOperation = $notaCariocaFactory->createOperation('gerar-nfse', $env);
+$gerarOperation->setRps($rps);
 
 $soapHandler = new SoapHandler(['cert_path' => '/path/to/valid/cert.pfx', 'cert_pass' => 'certpassword']);
 
 // Send SOAP xml
-$response = $soapHandler->send($notaCarioca);
+$response = $soapHandler->send($gerarOperation);
 
 if ($soapHandler->isSuccess($response)) {
-    $nfs = $notaCarioca->formatSuccessResponse($response);
+    $nfs = $gerarOperation->formatSuccessResponse($response);
     var_dump($nfs);
 } else {
     var_dump($soapHandler->getErrors($response));
@@ -193,100 +195,8 @@ array (size=1)
 
 ```
 
-### ConsultaNfse
-
-```php
-use NFSePHP\NotaCarioca\ConsultarNfseFactory;
-use NFSePHP\NotaCarioca\SoapHandler;
-
-$rps = [
-    'Prestador' => [
-        'Cnpj' => '11111111111111',
-        'InscricaoMunicipal' => '11111111',
-    ],
-    'PeriodoEmissao' => [
-        'DataInicial' => '2020-01-30',
-        'DataFinal' => '2020-01-30',
-    ],
-    'Tomador' => [
-        'CpfCnpj' => [
-            'Cpf' => '1111111111',
-        ],
-    ],
-];
-
-$env = 'dev'; // dev or prod
-$notaCariocaConsulta = new ConsultarNfseFactory($rps, $env);
-
-$soapHandler = new SoapHandler(['cert_path' => '/path/to/valid/cert.pfx', 'cert_pass' => 'certpassword']);
-
-// Send SOAP xml
-$response = $soapHandler->send($notaCariocaConsulta);
-
-if ($soapHandler->isSuccess($response)) {
-    $nfs = $notaCariocaConsulta->formatSuccessResponse($response);
-
-    var_dump($nfs);
-} else {
-    $errors = $soapHandler->getErrors($response);
-
-    var_dump($errors);
-}
-
-```
-
-### CancelarNfse
-
-```php
-<?php
-
-use NFSePHP\NotaCarioca\CancelarNfseFactory;
-use NFSePHP\NotaCarioca\SoapHandler;
-
-$nfse = [
-    'IdentificacaoNfse' => [
-        'Numero' => '9',
-        'Cnpj' => '1111111111111',
-        'InscricaoMunicipal' => '11111111',
-        'CodigoMunicipio' => '111111',
-    ],
-    'CodigoCancelamento' => '1',
-    // 1 Erro na emissão
-    // 2 Serviço não prestado
-    // 3 Duplicidade da nota
-    // 9 Outros
-];
-
-$env = 'dev'; // dev or prod
-$notaCariocaCancel = new CancelarNfseFactory($nfse, $env);
-
-$soapHandler = new SoapHandler(['cert_path' => '/path/to/valid/cert.pfx', 'cert_pass' => 'certpassword']);
-
-// Send SOAP xml
-$response = $soapHandler->send($notaCariocaCancel);
-
-if ($soapHandler->isSuccess($response)) {
-    $nfs = $notaCariocaCancel->formatSuccessResponse($response);
-
-    var_dump($nfs);
-} else {
-    $errors = $soapHandler->getErrors($response);
-
-    var_dump($errors);
-}
-
-/* Response
-array (size=2)
-  'DataHoraCancelamento' => string '2020-02-20T12:13:22' (length=19)
-  'Pedido' => int 54804
-
-*/
-
-```
-
 # TODO's
 
 -   Add missing operations (ConsultarLoteRps, ConsultarSituacaoLoteRps, EnviarLoteRps)
 -   Add tests
 
-Inspired by https://github.com/nfephp-org
