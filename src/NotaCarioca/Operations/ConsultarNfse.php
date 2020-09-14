@@ -33,17 +33,18 @@ class ConsultarNfse extends NotaCariocaOperationBase
 
         $responseArr = [];
         if (isset($resultArr['ListaNfse']) and isset($resultArr['ListaNfse']['CompNfse'])) {
-            $count_result =  count($resultArr['ListaNfse']['CompNfse']);
-           if($count_result <=1){
-               foreach ($resultArr['ListaNfse']['CompNfse'] as $nfse) {
-                  $responseArr[] = $nfse['InfNfse'];
-                  }
-            }else{
-            foreach ($resultArr['ListaNfse']['CompNfse'] as $nfse) {
-               $responseArr[] = $nfse['Nfse']['InfNfse'];
-            }
+            $countResult = count($resultArr['ListaNfse']['CompNfse']);
+            if ($countResult <= 1) {
+                foreach ($resultArr['ListaNfse']['CompNfse'] as $nfse) {
+                    $responseArr[] = $nfse['InfNfse'];
+                }
+            } else {
+                foreach ($resultArr['ListaNfse']['CompNfse'] as $nfse) {
+                    $responseArr[] = $nfse['Nfse']['InfNfse'];
+                }
             }
         }
+
         return $responseArr;
     }
 
