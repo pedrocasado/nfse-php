@@ -50,6 +50,7 @@ class GerarNfseNotaCarioca extends NotaCariocaOperationBase
                 'OptanteSimplesNacional',
                 'IncentivadorCultural',
                 'Status',
+                'RpsSubstituido?' => ['Numero', 'Serie', 'Tipo'],
                 'Servico' => [
                     'Valores' => [
                         'ValorServicos',
@@ -108,6 +109,7 @@ class GerarNfseNotaCarioca extends NotaCariocaOperationBase
                 'OptanteSimplesNacional' => $this->rps['OptanteSimplesNacional'],
                 'IncentivadorCultural' => $this->rps['IncentivadorCultural'],
                 'Status' => $this->rps['Status'],
+                'RpsSubstituido' => isset($this->rps['RpsSubstituido']) ? $this->rps['RpsSubstituido'] : null,
                 // @TODO Set parameters one by one to remove the need to worry about order
                 // Order Matters (Servico must be before Prestador)
                 'Servico' => [
