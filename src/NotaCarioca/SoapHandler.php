@@ -43,11 +43,12 @@ class SoapHandler implements SoapInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function send(XmlInterface $notaCariocaFactory): string
     {
-        $operation = $notaCariocaFactory->getOperation();
-        $url = $notaCariocaFactory->getEndpointUrl($notaCariocaFactory->getEnv());
+        $url = $notaCariocaFactory->getEndpointUrl();
         $action = $notaCariocaFactory->getAction();
 
         $xml = $notaCariocaFactory->getEnvelopeXml();
@@ -68,6 +69,10 @@ class SoapHandler implements SoapInterface
         $certPassword = $this->certPass;
 
         openssl_pkcs12_read($data, $certs, $certPassword);
+        $err = openssl_error_string();
+        if ($err) {
+            throw new \Exception("Error while validating certificate and password: ".$err);
+        }
         $pkey = $certs['pkey'];
 
         // Encrypt .pem file with a temporary password
