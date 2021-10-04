@@ -32,7 +32,7 @@ class SoapHandler implements SoapInterface
     public function __construct(array $params)
     {
         if (!isset($params['cert_path'])) {
-            throw new RuntimeException('cert_path missing.');
+            throw new \RuntimeException('cert_path missing.');
         }
 
         $this->certPath = $params['cert_path'];
