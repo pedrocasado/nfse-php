@@ -63,7 +63,7 @@ abstract class NotaCariocaOperationBase implements XmlInterface
      */
     public function getEndpointUrl(): string
     {
-        $hml = 'prod' != $this->env ? 'homologacao.' : '';
+        $hml = 'prod' != $this->env ? 'notacariocahom.' : '';
 
         return 'https://'.$hml.'notacarioca.rio.gov.br/WSNacional/nfse.asmx';
     }
