@@ -27,7 +27,7 @@
         "ext-dom": "*",
         "ext-openssl": "*",
         "ext-xml": "*",
-        "vanilla/garden-schema": "^2.2",
+        "vanilla/garden-schema": "^3.0",
         "symfony/serializer": "^3.4 || ^4.0 || ^5.0 || ^6.0 || ^7.0"
     },
     "require-dev": {
