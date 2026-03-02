@@ -10,9 +10,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class InfDpsDTO implements \JsonSerializable
 {
     public function __construct(
-        // #[Assert\NotBlank]
-        // public readonly string $id,
-
         #[Assert\NotBlank]
         #[Assert\Choice(choices: ['1', '2'])]
         public readonly string $tpAmb, // 1 = Produção, 2 = Homologação
@@ -21,14 +18,14 @@ class InfDpsDTO implements \JsonSerializable
         public readonly string $dhEmi,
 
         #[Assert\NotBlank]
-        #[Assert\Regex(pattern: '/^[1-9]\d{0,4}$/')]
+        #[Assert\Regex(pattern: '/^0{0,4}\d{1,5}$/')]
         public readonly string $serie, // 1-99999, não pode ser 0
 
         #[Assert\NotBlank]
         public readonly string $nDPS, // Número do DPS
 
         #[Assert\NotBlank]
-        // #[Assert\Regex(pattern: '/^\d{4}-\d{2}-\d{2}$/')]
+        #[Assert\Regex(pattern: '/^\d{4}-\d{2}-\d{2}$/')]
         public readonly string $dCompet, // Data competência AAAA-MM-DD
 
         #[Assert\NotBlank]
@@ -38,17 +35,14 @@ class InfDpsDTO implements \JsonSerializable
         #[Assert\NotBlank]
         public readonly string $cLocEmi, // Código IBGE município emissor
 
-        // Prestador (required)
         #[Assert\NotBlank]
         #[Assert\Valid]
         public readonly PrestadorDTO $prest,
 
-        // Serviço (required)
         #[Assert\NotBlank]
         #[Assert\Valid]
         public readonly ServicoDTO $serv,
 
-        // Valores (required)
         #[Assert\NotBlank]
         #[Assert\Valid]
         public readonly ValoresServicoDTO $valores,
@@ -66,11 +60,8 @@ class InfDpsDTO implements \JsonSerializable
         #[Assert\NotBlank]
         public readonly ?string $verAplic = '1.00',
 
-        // Opcionais
         public readonly ?string $cMotivoEmisTI = null,
         public readonly ?string $chNFSeRej = null,
-        public readonly ?SubstituicaoDTO $subst = null,
-        public readonly ?IbsCbsInfoDTO $ibscbs = null,
     ) {
     }
 
