@@ -56,7 +56,7 @@ class NFSeService
      * @return DpsResponse HTTP status, raw body and parsed SefinNacionalResponse when body is JSON
      *
      * @throws ValidationFailedException
-     * @throws InvalidXSDException       when XSD validation fails and debug mode is enabled
+     * @throws InvalidXSDException
      */
     public function createNFSe(InfDpsDTO $infDpsDTO, bool $validateDTOs = true): DpsResponse
     {
@@ -115,7 +115,7 @@ class NFSeService
     /**
      * Register Evento de Cancelamento de NFS-e (e101101) for a given NFSe.
      *
-     * @throws InvalidXSDException when event XML fails XSD validation and debug mode is enabled
+     * @throws InvalidXSDException
      */
     public function cancelNFSe(EventoCancelamentoDTO $evento): EventoResponse
     {
@@ -311,7 +311,7 @@ class NFSeService
     }
 
     /**
-     * Build XML for Evento de Cancelamento (e101101) conforme evento_v1.00.xsd (Sefin Nacional).
+     * Build XML for Evento de Cancelamento (e101101)
      */
     private function getCancelamentoEventoXml(EventoCancelamentoDTO $evento): string
     {
@@ -323,7 +323,7 @@ class NFSeService
         $eventoArr = [
             'pedRegEvento' => [
                 '@xmlns' => 'http://www.sped.fazenda.gov.br/nfse',
-                '@versao' => '1.00',
+                '@versao' => '1.01',
                 'infPedReg' => [
                     '@Id' => $idPedReg,
                     'tpAmb' => $evento->tpAmb,
@@ -357,9 +357,6 @@ class NFSeService
         return $xml;
     }
 
-    /**
-     * Build valores NFSe structure from DTO.
-     */
     private function buildValores(ValoresServicoDTO $valores): array
     {
         return [
@@ -398,9 +395,6 @@ class NFSeService
         ];
     }
 
-    /**
-     * Build infDPS structure from DTO.
-     */
     /**
      * Generate DPS ID from DTO values according to specification:
      * "DPS" + Cód.Mun(7) + Tipo Inscrição(1) + Inscrição(14) + Série(5) + Número(15)
@@ -615,9 +609,7 @@ class NFSeService
     }
 
     /**
-     * Validate DPS XML against XSD schema (DPS_v1.01.xsd).
-     *
-     * @throws InvalidXSDException if XML or XSD validation fails
+     * @throws InvalidXSDException
      */
     private function signXml(string $xml, string $tagname = 'infDPS', string $mark = 'Id'): string
     {
@@ -660,13 +652,11 @@ class NFSeService
     }
 
     /**
-     * Validate Evento XML against evento_v1.00.xsd (Sefin Nacional usa schema 1.00: nDFSe, TSIdPedRegEvt 56 dígitos).
-     *
-     * @throws InvalidXSDException if XML or XSD validation fails
+     * @throws InvalidXSDException
      */
     private function validateEventoXmlAgainstXsd(string $xml): void
     {
-        $xsdPath = __DIR__.'/../xsd/pedRegEvento_v1.00.xsd';
+        $xsdPath = __DIR__.'/../xsd/1.01/pedRegEvento_v1.01.xsd';
         $this->doXmlXsdValidation(
             $xml,
             $xsdPath,
@@ -675,9 +665,12 @@ class NFSeService
         );
     }
 
+    /**
+     * @throws InvalidXSDException
+     */
     private function validateXmlAgainstXsd(string $xml): void
     {
-        $xsdPath = __DIR__.'/../xsd/DPS_v1.01.xsd';
+        $xsdPath = __DIR__.'/../xsd/1.01/DPS_v1.01.xsd';
         $this->doXmlXsdValidation(
             $xml,
             $xsdPath,
@@ -687,8 +680,6 @@ class NFSeService
     }
 
     /**
-     * Shared XML + XSD validation logic used by both DPS and Evento validators.
-     *
      * @throws InvalidXSDException
      */
     private function doXmlXsdValidation(string $xml, string $xsdPath, string $invalidPrefix, string $xsdPrefix): void

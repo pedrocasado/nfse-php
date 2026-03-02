@@ -6,9 +6,7 @@
            attributeFormDefault="unqualified"
            elementFormDefault="qualified">
   <xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="xmldsig-core-schema.xsd"/>
-  <xs:include schemaLocation="tiposComplexos_v1.00.xsd"/>
-
-
+  <xs:include schemaLocation="tiposComplexos_v1.01.xsd"/>
   <!--TIPO COMPLEXO PARA EVENTO -->
   <xs:complexType name="TCEvento">
     <xs:sequence>
