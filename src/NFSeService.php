@@ -9,6 +9,8 @@ use NFSePHP\DTO\EnderecoDTO;
 use NFSePHP\DTO\EventoCancelamentoDTO;
 use NFSePHP\DTO\EventoCancelamentoResponseDTO;
 use NFSePHP\DTO\EventoResponse;
+use NFSePHP\DTO\EventosConsultaDTO;
+use NFSePHP\DTO\EventosResponse;
 use NFSePHP\DTO\InfDpsDTO;
 use NFSePHP\DTO\PrestadorDTO;
 use NFSePHP\DTO\SefinNacionalResponse;
@@ -164,33 +166,52 @@ class NFSeService
         );
     }
 
-    // @TODO
-    public function getEvents()
-    {
+    /**
+     * GET eventos for a given NFSe: nfse/{chaveAcesso}/eventos/{tipoEvento}/{numSeqEvento}.
+     *
+     * @param string $chaveAcesso  NFSe access key (e.g. from SefinNacionalResponse->chaveAcesso)
+     * @param string $tipoEvento   Event type code (e.g. 101101 for cancelamento)
+     * @param string $numSeqEvento Sequence number (e.g. 1)
+     * @param string $tpAmb        Environment: '1' = Produção, '2' = Homologação
+     */
+    public function getEvents(
+        string $chaveAcesso,
+        string $tipoEvento,
+        string $numSeqEvento,
+        string $tpAmb = '2',
+    ): EventosResponse {
         $pemPaths = $this->certificate->getPemFilePaths();
 
-        // http://sefin.producaorestrita.nfse.gov.br/SefinNacional/nfse/{chaveAcesso}/eventos/{tipoEvento}/{numSeqEvento}
-        $endpointUrl = $this->resolveEndpointUrl(2).'/33045572210738989000199000000000001126025596416790/eventos/101101/1';
+        $endpointUrl = $this->resolveEndpointUrl($tpAmb).'/'.$chaveAcesso.'/eventos/'.$tipoEvento.'/'.$numSeqEvento;
 
-        if ($this->debug) {
-            echo PHP_EOL;
-            echo 'Sending Evento de Cancelamento to: '.$endpointUrl;
-            echo PHP_EOL;
-        }
+        $this->logDebug('GET eventos', ['endpoint' => $endpointUrl]);
 
         $response = $this->getHttpClient()->request('GET', $endpointUrl, [
             'headers' => [
                 'Content-Type' => 'application/json',
             ],
-            // 'body' => json_encode([
-            //     'pedidoRegistroEventoXmlGZipB64' => $base64GzippedXml,
-            // ]),
             'local_cert' => $pemPaths['cert'],
             'local_pk' => $pemPaths['key'],
         ]);
 
         $statusCode = $response->getStatusCode();
         $rawBody = $response->getContent(false);
+
+        $parsed = null;
+        try {
+            $decoded = json_decode($rawBody, true, 512, \JSON_THROW_ON_ERROR);
+            if (\is_array($decoded)) {
+                $parsed = EventosConsultaDTO::fromArray($decoded);
+            }
+        } catch (\JsonException) {
+            // Body is not JSON
+        }
+
+        return new EventosResponse(
+            statusCode: $statusCode,
+            rawBody: $rawBody,
+            response: $parsed,
+        );
     }
 
     /**
