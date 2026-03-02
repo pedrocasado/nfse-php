@@ -47,12 +47,8 @@ class InfDpsDTO implements \JsonSerializable
         #[Assert\Valid]
         public readonly ValoresServicoDTO $valores,
 
-        // Tomador (optional)
         #[Assert\Valid]
         public readonly ?TomadorDTO $toma = null,
-
-        // Intermediário (optional)
-        // public readonly ?IntermediarioDTO $interm = null,
 
         #[Assert\NotBlank]
         public readonly ?string $versao = '1.01',
