@@ -5,3 +5,4 @@ composer.lock
 .php_cs-fixer.cache
 .php-cs-fixer.cache
 .phpunit.cache
+.idea
