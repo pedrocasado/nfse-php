@@ -1,202 +1,172 @@
-# NFSePHP - Nota Carioca
+# NFSePHP
 
-Lib to communicate with SOAP web services and generate NFS-e (Nota Fiscal de Serviços Eletrônica). Support to Nota Carioca only as of today.
+Library to communicate with the **Sistema Nacional da NFS-e** (Sefin Nacional): create and cancel NFS-e via the national REST API.
 
-### Operations Supported
+**Version 3** is a complete refactor from v2. It targets the Sefin Nacional environment only (no Nota Carioca or other SOAP providers). DPS and evento XML follow the official XSDs; certificate-based signing and optional PSR-3 logging are built in.
 
--   Nota Carioca
-    -   GerarNfse
-    -   ConsultarNfsePorRps
-    -   ConsultarNfse
-    -   CancelarNfse
+---
 
-# Install
+## Install
 
 ```bash
 composer require pedrocasado/nfse-php
 ```
 
-# Usage
+---
 
-Check examples/ folder
+## Certificate
 
-You must have a valid certificate to use Nota Carioca staging environment.
-
-### GerarNfse
+Use a PFX (PKCS#12) certificate issued for your company. The library needs the **PFX binary content** and password (e.g. read from file or env).
 
 ```php
-use NFSePHP\NotaCarioca\NotaCariocaFactory;
-use NFSePHP\NotaCarioca\SoapHandler;
+use NFSePHP\Certificate;
 
-$rps = [
-    'IdentificacaoRps' => [
-        'Numero' => 119,
-        'Serie' => 'A',
-        'Tipo' => 1,
-        // 1 - RPS
-        // 2 – Nota Fiscal Conjugada (Mista)
-        // 3 – Cupom
-    ],
-    'DataEmissao' => date('Y-m-d').'T'.date('H:i:s'),
-    'NaturezaOperacao' => 1,
-    // 1 – Tributação no município
-    // 2 - Tributação fora do município
-    // 3 - Isenção
-    // 4 - Imune
-    // 5 – Exigibilidade suspensa por decisão judicial
-    // 6 – Exigibilidade suspensa por procedimento administrativo
-
-    'RegimeEspecialTributacao' => 3, // optional
-    // 1 – Microempresa municipal
-    // 2 - Estimativa
-    // 3 – Sociedade de profissionais
-    // 4 – Cooperativa
-    // 5 – MEI – Simples Nacional
-    // 6 – ME EPP – Simples Nacional
-
-    'OptanteSimplesNacional' => 2, // 1 - Sim 2 - Não
-    'IncentivadorCultural' => 2, // 1 - Sim 2 - Não
-    'Status' => 1, // 1 – Normal  2 – Cancelado
-
-    'Prestador' => [
-        'Cnpj' => '111111',
-        'InscricaoMunicipal' => '11111', // optional
-    ],
-
-    'Tomador' => [
-        'IdentificacaoTomador' => [ // optional
-            'CpfCnpj' => [
-                'Cpf' => '111',
-                // 'Cnpj' => '111',
-            ],
-        ],
-        'RazaoSocial' => 'Fulano de tal', // optional
-        'Endereco' => [ // optional
-            'Endereco' => 'Rua 1111', // optional
-            'Numero' => '1', // optional
-            'Complemento' => 'ap 1', // optional
-            'Bairro' => '1', // optional
-            'CodigoMunicipio' => 1111111, // optional
-            'Uf' => 'RJ', // optional
-            'Cep' => 11111111, // optional
-        ],
-    ],
-
-    'Servico' => [
-        'ItemListaServico' => '1002', // First 4 digits - https://notacarioca.rio.gov.br/files/leis/Resolucao_2617_2010_anexo2.pdf
-        'CodigoTributacaoMunicipio' => '100203', // 6 digits - https://notacarioca.rio.gov.br/files/leis/Resolucao_2617_2010_anexo2.pdf
-        'Discriminacao' => 'Pedido #1111 - Itens: #123 , #124',
-        'CodigoMunicipio' => 1111111,
-        'Valores' => [
-            'ValorServicos' => 228.6,
-            'ValorDeducoes' => 10.0, // optional
-            'ValorPis' => 10.0, // optional
-            'ValorCofins' => 10.0, // optional
-            'ValorInss' => 10.0, // optional
-            'ValorIr' => 10.0, // optional
-            'ValorCsll' => 10.0, // optional
-            'IssRetido' => 2, // 1 para ISS Retido - 2 para ISS não Retido,
-            'ValorIss' => 10.0, // optional
-            'OutrasRetencoes' => 10.0, // optional
-            'Aliquota' => 5, // optional
-            'DescontoIncondicionado' => 10.0, // optional
-            'DescontoCondicionado' => 10.0, // optional
-        ],
-    ],
-
-    'IntermediarioServico' => [ // optional
-        'RazaoSocial' => 'Fulano de tal',
-        'CpfCnpj' => [
-            'Cnpj' => '11111',
-            // 'Cpf' => '1111',
-        ],
-        'InscricaoMunicipal' => '11111', // optional
-    ],
-
-    'ConstrucaoCivil' => [ // optional
-        'CodigoObra' => '111',
-        'Art' => '111',
-    ],
-];
-
-$env = 'dev'; // dev - prod
-$notaCariocaFactory = new NotaCariocaFactory();
-$gerarOperation = $notaCariocaFactory->createOperation('gerar-nfse', $env);
-$gerarOperation->setRps($rps);
-
-$soapHandler = new SoapHandler(['cert_path' => '/path/to/valid/cert.pfx', 'cert_pass' => 'certpassword']);
-
-// Send SOAP xml
-$response = $soapHandler->send($gerarOperation);
-
-if ($soapHandler->isSuccess($response)) {
-    $nfs = $gerarOperation->formatSuccessResponse($response);
-    var_dump($nfs);
-} else {
-    var_dump($soapHandler->getErrors($response));
-}
-
-/* Response
-
-array (size=1)
-  'nfse' =>
-    array (size=14)
-      'Numero' => string '43' (length=2)
-      'CodigoVerificacao' => string 'VZW2-EJIB' (length=9)
-      'DataEmissao' => string '2020-02-28T09:09:55' (length=19)
-      'IdentificacaoRps' =>
-        array (size=3)
-          'Numero' => string '1' (length=1)
-          'Serie' => string 'A' (length=2)
-          'Tipo' => string '1' (length=1)
-      'DataEmissaoRps' => string '2020-02-28' (length=10)
-      'NaturezaOperacao' => string '1' (length=1)
-      'RegimeEspecialTributacao' => string '3' (length=1)
-      'OptanteSimplesNacional' => string '2' (length=1)
-      'IncentivadorCultural' => string '2' (length=1)
-      'Competencia' => string '2020-02-28T00:00:00' (length=19)
-      'Servico' =>
-        array (size=5)
-          'Valores' =>
-            array (size=3)
-              'ValorServicos' => string '228.6' (length=5)
-              'IssRetido' => string '2' (length=1)
-              'ValorLiquidoNfse' => string '228.6' (length=5)
-          'ItemListaServico' => string '1002' (length=4)
-          'CodigoTributacaoMunicipio' => string '100203' (length=6)
-          'Discriminacao' => string 'Pedido #1111 - Itens: #123 , #124' (length=33)
-          'CodigoMunicipio' => string '3304557' (length=7)
-      'PrestadorServico' =>
-        array (size=4)
-          'IdentificacaoPrestador' =>
-            array (size=2)
-              'Cnpj' => string '11111111111111' (length=14)
-              'InscricaoMunicipal' => string '1111111' (length=7)
-          'RazaoSocial' => string '11111111' (length=48)
-          'Endereco' =>
-            array (size=7)
-              'Endereco' => string '11111' (length=39)
-              'Numero' => string '1111' (length=3)
-              'Complemento' => string '11111' (length=15)
-              'Bairro' => string '11111' (length=7)
-              'CodigoMunicipio' => string '3304557' (length=7)
-              'Uf' => string 'RJ' (length=2)
-              'Cep' => string '1111111' (length=8)
-          'Contato' => string '' (length=0)
-      'TomadorServico' =>
-        array (size=2)
-          'IdentificacaoTomador' => string '' (length=0)
-          'Endereco' => string '' (length=0)
-      'OrgaoGerador' =>
-        array (size=2)
-          'CodigoMunicipio' => string '3304557' (length=7)
-          'Uf' => string 'RJ' (length=2)
-*/
-
+$pfxContent = file_get_contents('/path/to/certificate.pfx');
+$certificate = new Certificate(pfxContent: $pfxContent, pfxPassword: 'your-pfx-password');
 ```
 
-# TODO's
+---
 
--   Add missing operations (ConsultarLoteRps, ConsultarSituacaoLoteRps, EnviarLoteRps)
--   Add tests
+## Create NFS-e (DPS)
 
+Build an `InfDpsDTO` (prestador, tomador, serviço, valores, competência, etc.), then call `createNFSe`. The service builds the DPS XML, signs it, optionally validates against the XSD, then sends it gzip+base64 to the Sefin endpoint. Environment (homolog/prod) is taken from `InfDpsDTO->tpAmb` (1 = production, 2 = homologation) unless you override the base URL.
+
+```php
+use NFSePHP\Certificate;
+use NFSePHP\NFSeService;
+use NFSePHP\DTO\InfDpsDTO;
+use NFSePHP\DTO\PrestadorDTO;
+use NFSePHP\DTO\TomadorDTO;
+use NFSePHP\DTO\ServicoDTO;
+use NFSePHP\DTO\ValoresServicoDTO;
+
+$certificate = new Certificate(pfxContent: $pfxContent, pfxPassword: $pfxPassword);
+$service = new NFSeService(certificate: $certificate);
+
+$dto = new InfDpsDTO(
+    tpAmb: '2',
+    versao: '1.01',
+    prest: new PrestadorDTO(cnpj: '...', inscricaoMunicipal: '...', razaoSocial: '...', /* ... */),
+    tomador: new TomadorDTO(/* ... */),
+    servico: new ServicoDTO(/* ... */),
+    valores: new ValoresServicoDTO(/* ... */),
+    dCompet: '...',
+    cLocEmi: '...',
+    serie: '1',
+    nDPS: '1',
+    // ...
+);
+
+$response = $service->createNFSe(infDpsDTO: $dto);
+
+if ($response->isHttpSuccess() && $response->hasParsedResponse()) {
+    $body = $response->response;
+    if ($body->isSuccess()) {
+        $chave = $body->chaveAcesso;
+        $xml = $body->getNfseXml(); // decoded gzip+base64
+    } else {
+        foreach ($body->getErros() as $erro) {
+            // $erro->codigo, $erro->descricao
+        }
+    }
+} else {
+    $statusCode = $response->statusCode;
+    $rawBody = $response->rawBody;
+}
+```
+
+---
+
+## Cancel NFS-e (Evento)
+
+Use `EventoCancelamentoDTO` with the NFS-e key, author (CNPJ or CPF), reason code and description, then call `cancelNFSe`. The service builds the evento XML (pedRegEvento layout per schema 1.00), signs `infPedReg`, sends it gzip+base64 to `/{chave}/eventos`.
+
+```php
+use NFSePHP\DTO\EventoCancelamentoDTO;
+use NFSePHP\DTO\EventoResponse;
+
+$evento = new EventoCancelamentoDTO(
+    tpAmb: '2',
+    dhEvento: '2026-02-27T19:00:00-03:00',
+    chNFSe: '33045572210738989000199000000000001026029316934590',
+    cMotivo: '2',
+    xMotivo: 'Cancelamento de teste com motivo adequado',
+    cnpjAutor: '10738989000199',
+);
+
+$response = $service->cancelNFSe(evento: $evento);
+
+if ($response->isHttpSuccess() && $response->hasParsedResponse()) {
+    $body = $response->response;
+    $xml = $body->getEventoXml();
+} else {
+    $statusCode = $response->statusCode;
+    $rawBody = $response->rawBody;
+}
+```
+
+---
+
+## Configuration
+
+- **Endpoint**  
+  By default the base URL is chosen from `tpAmb` (1 → production, 2 → homologation). You can override it when constructing `DpsService`:
+
+    ```php
+    $service = new NFSeService(certificate: $certificate, endpointUrl: 'https://custom.sefin.gov.br/nfse');
+    ```
+
+- **Logger (PSR-3)**  
+  Pass a `Psr\Log\LoggerInterface` to send debug output (XML dumps, validation errors, request URLs) to your app logger:
+
+    ```php
+    $service = new NFSeService(certificate: $certificate, logger: $logger);
+    ```
+
+- **Debug flag**  
+  If you don’t inject a logger but set `$debug = true`, the same information is written to stderr.
+
+- **DTO validation**  
+  `createNFSe(infDpsDTO: $dto, validateDTOs: true)` runs Symfony Validator on `InfDpsDTO` (and nested DTOs). Use `validateDTOs: false` to skip.
+
+- **XSD validation**  
+  When enabled (e.g. in debug), the signed DPS and evento XML are validated against the bundled XSDs. On failure an `InvalidXSDException` is thrown (or only logged, depending on flow).
+
+---
+
+## Response parsing
+
+- **DPS**  
+  `DpsResponse` holds `statusCode`, `rawBody`, and optional `response` (`SefinNacionalResponse`). Use `response->isSuccess()` / `response->isError()`, `response->getErros()`, `response->getNfseXml()`.
+
+- **Evento**  
+  `EventoResponse` holds `statusCode`, `rawBody`, and optional `response` (`EventoCancelamentoResponseDTO`). Use `response->getEventoXml()` to decode the returned gzip+base64 evento XML.
+
+The Sefin API can return errors in `erro` or `erros`, with `codigo`/`Codigo` and `descricao`/`Descricao`; the library normalizes these when parsing.
+
+---
+
+## Tests
+
+```bash
+composer test
+```
+
+Tests cover DTOs (including validation), response parsing (Sefin and Evento), and response helpers. See `tests/README.md` for details and ideas for XML-building tests.
+
+---
+
+## Changelog / v2 → v3
+
+- **Target**: Sefin Nacional (REST, JSON body, gzip+base64 XML). No Nota Carioca or SOAP.
+- **DPS**: Build from `InfDpsDTO`, sign `infDPS`, POST to Sefin; response parsed into `SefinNacionalResponse`.
+- **Cancelamento**: Evento de cancelamento (e101101) with `pedRegEvento`/`infPedReg` layout (schema 1.00), sign `infPedReg`, POST to `/{chave}/eventos`.
+- **Certificate**: PFX content + password; PEM paths used for HTTP client mTLS.
+- **Logging**: Optional PSR-3 logger or `$debug` stderr fallback.
+- **Validation**: Symfony Validator on DTOs; optional XSD validation for signed XML.
+
+---
+
+## License
+
+LGPL-3.0-or-later / GPL-3.0-or-later / MIT.

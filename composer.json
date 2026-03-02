@@ -1,13 +1,12 @@
 {
     "name": "pedrocasado/nfse-php",
     "type": "library",
-    "description": "Lib to communicate with web services to generate NFS-e (Nota Fiscal de Serviços Eletrônica)",
+    "description": "Lib to communicate with Sistema Nacional (NFS-e)",
     "keywords": [
         "nfse",
-        "nfse",
         "nfse-php",
-        "nota carioca",
-        "nota fiscal de servicos eletronica"
+        "nota fiscal de servicos eletronica",
+        "sistema nacional de notas fiscais eletronicas"
     ],
     "license": [
         "LGPL-3.0-or-later",
@@ -22,21 +21,35 @@
         }
     ],
     "require": {
-        "php": "^7.1 | ^8.0",
+        "php": "^8.1",
         "ext-curl": "*",
         "ext-dom": "*",
+        "ext-libxml": "*",
         "ext-openssl": "*",
         "ext-xml": "*",
-        "vanilla/garden-schema": "^3.0",
-        "symfony/serializer": "^3.4 || ^4.0 || ^5.0 || ^6.0 || ^7.0"
+        "ext-zlib": "*",
+        "symfony/serializer": "^7.4",
+        "symfony/http-client": "^7.4",
+        "symfony/validator": "^7.4",
+        "nfephp-org/sped-common": "^5.1",
+        "psr/log": "^3.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.16"
+        "friendsofphp/php-cs-fixer": "^v3.94.2",
+        "phpunit/phpunit": "^10.0"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NFSePHP\\Tests\\": "tests/"
+        }
     },
     "autoload": {
         "psr-4": {
             "NFSePHP\\": "src/"
         }
+    },
+    "scripts": {
+        "test": "phpunit"
     },
     "extra": {
         "branch-alias": {
