@@ -16,7 +16,7 @@ final class SefinNacionalResponseTest extends TestCase
             "versaoAplicativo": "SefinNacional_1.6.0",
             "dataHoraProcessamento": "2026-02-27T15:05:21.4015763-03:00",
             "idDps": "550e8400-e29b-41d4-a716-446655440000",
-            "chaveAcesso": "33045572210738989000199000000000001026029316934590",
+            "chaveAcesso": "33045572238744743000149000000000001026029316934590",
             "nfseXmlGZipB64": "H4sIAAAAAAAA/6tWKkktLlGyUlAqSS0u0QHQPwgEAAAA",
             "alertas": []
         }
@@ -27,7 +27,7 @@ final class SefinNacionalResponseTest extends TestCase
         self::assertSame(1, $dto->tipoAmbiente);
         self::assertSame('SefinNacional_1.6.0', $dto->versaoAplicativo);
         self::assertSame('550e8400-e29b-41d4-a716-446655440000', $dto->idDps);
-        self::assertSame('33045572210738989000199000000000001026029316934590', $dto->chaveAcesso);
+        self::assertSame('33045572238744743000149000000000001026029316934590', $dto->chaveAcesso);
         self::assertNotNull($dto->nfseXmlGZipB64);
         self::assertSame([], $dto->alertas);
         self::assertTrue($dto->isSuccess());

@@ -311,7 +311,7 @@ class NFSeService
     }
 
     /**
-     * Build XML for Evento de Cancelamento (e101101)
+     * Build XML for Evento de Cancelamento (e101101).
      */
     private function getCancelamentoEventoXml(EventoCancelamentoDTO $evento): string
     {

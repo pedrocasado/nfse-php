@@ -88,10 +88,10 @@ use NFSePHP\DTO\EventoResponse;
 $evento = new EventoCancelamentoDTO(
     tpAmb: '2',
     dhEvento: '2026-02-27T19:00:00-03:00',
-    chNFSe: '33045572210738989000199000000000001026029316934590',
+    chNFSe: '33045572238744743000149000000000001026029316934590',
     cMotivo: '2',
     xMotivo: 'Cancelamento de teste com motivo adequado',
-    cnpjAutor: '10738989000199',
+    cnpjAutor: '38744743000149',
 );
 
 $response = $service->cancelNFSe(evento: $evento);

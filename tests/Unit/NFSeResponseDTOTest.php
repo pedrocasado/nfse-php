@@ -10,7 +10,7 @@ final class NFSeResponseDTOTest extends TestCase
     private const SAMPLE_XML = <<<'XML'
 <?xml version="1.0" encoding="utf-8"?>
 <NFSe versao="1.01" xmlns="http://www.sped.fazenda.gov.br/nfse">
-    <infNFSe Id="NFS33045572210738989000199000000000001426035469277013">
+    <infNFSe Id="NFS33045572238744743000149000000000001426035469277013">
         <xLocEmi>Rio de Janeiro</xLocEmi>
         <xLocPrestacao>Rio de Janeiro</xLocPrestacao>
         <nNFSe>14</nNFSe>
@@ -26,7 +26,7 @@ final class NFSeResponseDTOTest extends TestCase
         <dhProc>2026-03-02T09:18:49-03:00</dhProc>
         <nDFSe>298733</nDFSe>
         <emit>
-            <CNPJ>10738989000199</CNPJ>
+            <CNPJ>38744743000149</CNPJ>
             <xNome>BO COMPANIES COMERCIO E LOCACAO DE ROUPAS E ACESSORIOS S.A</xNome>
             <enderNac>
                 <xLgr>DAS ACACIAS</xLgr>
@@ -53,7 +53,7 @@ XML;
     {
         $dto = NFSeResponseDTO::fromXml(self::SAMPLE_XML);
 
-        self::assertSame('NFS33045572210738989000199000000000001426035469277013', $dto->id);
+        self::assertSame('NFS33045572238744743000149000000000001426035469277013', $dto->id);
         self::assertSame('14', $dto->nNFSe);
         self::assertSame('Rio de Janeiro', $dto->xLocEmi);
         self::assertSame('Rio de Janeiro', $dto->xLocPrestacao);
@@ -70,7 +70,7 @@ XML;
         $dto = NFSeResponseDTO::fromXml(self::SAMPLE_XML);
 
         self::assertIsArray($dto->emit);
-        self::assertSame('10738989000199', $dto->emit['CNPJ']);
+        self::assertSame('38744743000149', $dto->emit['CNPJ']);
         self::assertSame('BO COMPANIES COMERCIO E LOCACAO DE ROUPAS E ACESSORIOS S.A', $dto->emit['xNome']);
         self::assertSame('ATENDIMENTO@BOBAGS.COM.BR', $dto->emit['email']);
         self::assertSame('GAVEA', $dto->emit['enderNac']['xBairro']);
