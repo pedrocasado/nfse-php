@@ -5,31 +5,26 @@ namespace NFSePHP\DTO;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * DTO for Tomador de Serviços.
+ * DTO for Intermediário de Serviços (TCInfoPessoa from tiposComplexos_v1.01.xsd).
  */
-class TomadorDTO implements \JsonSerializable
+class IntermediarioDTO implements \JsonSerializable
 {
     public function __construct(
         #[Assert\NotBlank]
-        public readonly string $xNome, // Nome (required)
+        public readonly string $xNome,
 
-        // 0 - Não informado na nota de origem;
-        // 1 - Dispensado do NIF;
-        // 2 - Não exigência do NIF;
         public readonly ?string $cNaoNIF = null,
-
-        // CNPJ, CPF, NIF ou cNaoNIF (choice - um dos quatro)
         public readonly ?string $cnpj = null,
         public readonly ?string $cpf = null,
         public readonly ?string $nif = null,
         public readonly ?string $caepf = null,
         public readonly ?string $im = null,
+
         #[Assert\Valid]
         public readonly ?EnderecoDTO $end = null,
         public readonly ?string $fone = null,
         public readonly ?string $email = null,
     ) {
-        // Validar que pelo menos um identificador está presente
         if (null === $this->cnpj && null === $this->cpf && null === $this->nif && null === $this->cNaoNIF) {
             throw new \InvalidArgumentException('CNPJ, CPF, NIF ou cNaoNIF deve ser informado');
         }

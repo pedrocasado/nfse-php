@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 final class PrestadorDTOTest extends TestCase
 {
-    public function test_construct_with_cnpj_succeeds(): void
+    public function testConstructWithCnpjSucceeds(): void
     {
         $regTrib = new RegimeTributarioDTO();
         $dto = new PrestadorDTO(
@@ -22,7 +22,7 @@ final class PrestadorDTOTest extends TestCase
         self::assertNull($dto->cpf);
     }
 
-    public function test_construct_with_cpf_succeeds(): void
+    public function testConstructWithCpfSucceeds(): void
     {
         $regTrib = new RegimeTributarioDTO();
         $dto = new PrestadorDTO(
@@ -33,7 +33,7 @@ final class PrestadorDTOTest extends TestCase
         self::assertSame('12345678901', $dto->cpf);
     }
 
-    public function test_construct_with_nif_succeeds(): void
+    public function testConstructWithNifSucceeds(): void
     {
         $regTrib = new RegimeTributarioDTO();
         $dto = new PrestadorDTO(
@@ -44,7 +44,7 @@ final class PrestadorDTOTest extends TestCase
         self::assertSame('PT123456789', $dto->nif);
     }
 
-    public function test_construct_with_c_nao_nif_succeeds(): void
+    public function testConstructWithCNaoNifSucceeds(): void
     {
         $regTrib = new RegimeTributarioDTO();
         $dto = new PrestadorDTO(
@@ -55,7 +55,7 @@ final class PrestadorDTOTest extends TestCase
         self::assertSame('1', $dto->cNaoNIF);
     }
 
-    public function test_construct_without_identifier_throws(): void
+    public function testConstructWithoutIdentifierThrows(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('CNPJ, CPF, NIF ou cNaoNIF deve ser informado');
@@ -69,7 +69,7 @@ final class PrestadorDTOTest extends TestCase
         );
     }
 
-    public function test_construct_with_optional_fields(): void
+    public function testConstructWithOptionalFields(): void
     {
         $regTrib = new RegimeTributarioDTO();
         $end = new EnderecoDTO(xLgr: 'Rua X', nro: '1', xBairro: 'Centro');
@@ -88,7 +88,7 @@ final class PrestadorDTOTest extends TestCase
         self::assertSame('contato@empresa.com', $dto->email);
     }
 
-    public function test_json_serialize_returns_all_properties(): void
+    public function testJsonSerializeReturnsAllProperties(): void
     {
         $dto = new PrestadorDTO(
             regTrib: new RegimeTributarioDTO(),
@@ -102,7 +102,7 @@ final class PrestadorDTOTest extends TestCase
         self::assertArrayHasKey('cnpj', $data);
     }
 
-    public function test_to_string_returns_json(): void
+    public function testToStringReturnsJson(): void
     {
         $dto = new PrestadorDTO(
             regTrib: new RegimeTributarioDTO(),

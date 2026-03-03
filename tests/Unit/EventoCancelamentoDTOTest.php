@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Validation;
 
 final class EventoCancelamentoDTOTest extends TestCase
 {
-    public function test_construct_with_cnpj_succeeds(): void
+    public function testConstructWithCnpjSucceeds(): void
     {
         $dto = new EventoCancelamentoDTO(
             tpAmb: '2',
@@ -26,7 +26,7 @@ final class EventoCancelamentoDTOTest extends TestCase
         self::assertSame('1.01', $dto->verAplic);
     }
 
-    public function test_construct_with_cpf_succeeds(): void
+    public function testConstructWithCpfSucceeds(): void
     {
         $dto = new EventoCancelamentoDTO(
             tpAmb: '1',
@@ -41,7 +41,7 @@ final class EventoCancelamentoDTOTest extends TestCase
         self::assertSame('12345678901', $dto->cpfAutor);
     }
 
-    public function test_construct_without_cnpj_or_cpf_throws(): void
+    public function testConstructWithoutCnpjOrCpfThrows(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('cnpjAutor or cpfAutor must be informed');
@@ -57,7 +57,7 @@ final class EventoCancelamentoDTOTest extends TestCase
         );
     }
 
-    public function test_json_serialize_returns_all_properties(): void
+    public function testJsonSerializeReturnsAllProperties(): void
     {
         $dto = new EventoCancelamentoDTO(
             tpAmb: '2',
@@ -78,7 +78,7 @@ final class EventoCancelamentoDTOTest extends TestCase
         self::assertArrayHasKey('cnpjAutor', $data);
     }
 
-    public function test_validation_fails_for_invalid_tp_amb(): void
+    public function testValidationFailsForInvalidTpAmb(): void
     {
         $validator = Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator();
         $dto = new EventoCancelamentoDTO(

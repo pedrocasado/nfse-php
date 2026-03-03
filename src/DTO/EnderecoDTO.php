@@ -10,19 +10,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 class EnderecoDTO implements \JsonSerializable
 {
     public function __construct(
-        // Campos comuns (required se endereço presente)
         #[Assert\NotBlank]
-        public readonly string $xLgr, // Logradouro
-
-        #[Assert\NotBlank]
-        public readonly string $nro, // Número
+        public readonly string $xLgr,
 
         #[Assert\NotBlank]
-        public readonly string $xBairro, // Bairro
+        public readonly string $nro,
 
-        public readonly ?string $xCpl = null, // Complemento
+        #[Assert\NotBlank]
+        public readonly string $xBairro,
 
-        // Endereço Nacional (opcional)
+        public readonly ?string $xCpl = null,
         #[Assert\Valid]
         public readonly ?EnderecoNacionalSimplificadoDTO $endNac = null,
     ) {

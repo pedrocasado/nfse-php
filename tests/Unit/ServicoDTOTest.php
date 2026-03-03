@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 final class ServicoDTOTest extends TestCase
 {
-    public function test_construct_stores_properties(): void
+    public function testConstructStoresProperties(): void
     {
         $locPrest = new LocalPrestacaoDTO(cLocPrestacao: '3304557', cPaisPrestacao: '105');
         $cServ = new CodigoServicoDTO(cTribNac: '1.01', xDescServ: 'Desenvolvimento');
@@ -20,7 +20,7 @@ final class ServicoDTOTest extends TestCase
         self::assertSame($cServ, $dto->cServ);
     }
 
-    public function test_json_serialize_returns_all_properties(): void
+    public function testJsonSerializeReturnsAllProperties(): void
     {
         $locPrest = new LocalPrestacaoDTO(cLocPrestacao: '3304557', cPaisPrestacao: '105');
         $cServ = new CodigoServicoDTO(cTribNac: '1.01', xDescServ: 'Desc');
@@ -34,7 +34,7 @@ final class ServicoDTOTest extends TestCase
         self::assertSame($locPrest, $data['locPrest']);
     }
 
-    public function test_to_string_returns_json(): void
+    public function testToStringReturnsJson(): void
     {
         $locPrest = new LocalPrestacaoDTO(cLocPrestacao: '3304557', cPaisPrestacao: '105');
         $cServ = new CodigoServicoDTO(cTribNac: '1.01', xDescServ: 'Desc');

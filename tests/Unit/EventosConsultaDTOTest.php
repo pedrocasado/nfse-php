@@ -23,7 +23,7 @@ final class EventosConsultaDTOTest extends TestCase
         ],
     ];
 
-    public function test_from_array_parses_root_and_eventos(): void
+    public function testFromArrayParsesRootAndEventos(): void
     {
         $dto = EventosConsultaDTO::fromArray(self::SAMPLE);
 
@@ -33,7 +33,7 @@ final class EventosConsultaDTOTest extends TestCase
         self::assertCount(1, $dto->eventos);
     }
 
-    public function test_evento_item_parses_all_fields(): void
+    public function testEventoItemParsesAllFields(): void
     {
         $dto = EventosConsultaDTO::fromArray(self::SAMPLE);
         $item = $dto->eventos[0];
@@ -46,7 +46,7 @@ final class EventosConsultaDTOTest extends TestCase
         self::assertSame('eG1sPmV4YW1wbGU8L3htbD4=', $item->arquivoXml);
     }
 
-    public function test_from_array_empty_eventos(): void
+    public function testFromArrayEmptyEventos(): void
     {
         $dto = EventosConsultaDTO::fromArray([
             'dataHoraProcessamento' => '2026-03-02T10:00:00-03:00',

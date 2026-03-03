@@ -24,8 +24,6 @@ class PrestadorDTO implements \JsonSerializable
         public readonly ?string $cnpj = null,
         public readonly ?string $cpf = null,
         public readonly ?string $nif = null,
-
-        // Opcionais
         public readonly ?string $caepf = null,
         public readonly ?string $im = null,
         public readonly ?string $xNome = null,

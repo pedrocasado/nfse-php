@@ -33,7 +33,7 @@ final class InfDpsDTOTest extends TestCase
         );
     }
 
-    public function test_construct_stores_required_fields(): void
+    public function testConstructStoresRequiredFields(): void
     {
         $dto = $this->createMinimalInfDpsDTO();
 
@@ -49,7 +49,7 @@ final class InfDpsDTOTest extends TestCase
         self::assertSame('1.00', $dto->verAplic);
     }
 
-    public function test_construct_with_tomador(): void
+    public function testConstructWithTomador(): void
     {
         $tomador = new \NFSePHP\DTO\TomadorDTO(xNome: 'Cliente', cnpj: '12345678000199');
         $dto = new InfDpsDTO(
@@ -72,7 +72,7 @@ final class InfDpsDTOTest extends TestCase
         self::assertSame($tomador, $dto->toma);
     }
 
-    public function test_json_serialize_returns_all_properties(): void
+    public function testJsonSerializeReturnsAllProperties(): void
     {
         $dto = $this->createMinimalInfDpsDTO();
 
@@ -85,21 +85,21 @@ final class InfDpsDTOTest extends TestCase
         self::assertArrayHasKey('valores', $data);
     }
 
-    public function test_to_json_returns_json_string(): void
+    public function testToJsonReturnsJsonString(): void
     {
         $dto = $this->createMinimalInfDpsDTO();
 
         self::assertJson($dto->toJson());
     }
 
-    public function test_to_string_returns_json(): void
+    public function testToStringReturnsJson(): void
     {
         $dto = $this->createMinimalInfDpsDTO();
 
         self::assertJson((string) $dto);
     }
 
-    public function test_validation_fails_for_invalid_tp_amb(): void
+    public function testValidationFailsForInvalidTpAmb(): void
     {
         $validator = Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator();
         $dto = new InfDpsDTO(
@@ -123,7 +123,7 @@ final class InfDpsDTOTest extends TestCase
         self::assertGreaterThan(0, $violations->count());
     }
 
-    public function test_validation_fails_for_invalid_d_compet_format(): void
+    public function testValidationFailsForInvalidDCompetFormat(): void
     {
         $validator = Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator();
         $dto = new InfDpsDTO(
@@ -147,7 +147,7 @@ final class InfDpsDTOTest extends TestCase
         self::assertGreaterThan(0, $violations->count());
     }
 
-    public function test_construct_with_optional_fields(): void
+    public function testConstructWithOptionalFields(): void
     {
         $dto = new InfDpsDTO(
             tpAmb: '2',
@@ -169,5 +169,54 @@ final class InfDpsDTOTest extends TestCase
 
         self::assertSame('001', $dto->cMotivoEmisTI);
         self::assertSame('chave_rejeicao', $dto->chNFSeRej);
+    }
+
+    public function testConstructWithSubstituicao(): void
+    {
+        $subst = new \NFSePHP\DTO\SubstituicaoDTO(
+            chSubstda: '33045572210738989000199000000000001026029316934590',
+            cMotivo: '01',
+        );
+        $dto = new InfDpsDTO(
+            tpAmb: '2',
+            dhEmi: '2026-03-03T10:00:00-03:00',
+            serie: '1',
+            nDPS: '1',
+            dCompet: '2026-03-01',
+            tpEmit: '1',
+            cLocEmi: '3304557',
+            prest: new PrestadorDTO(regTrib: new RegimeTributarioDTO(), cnpj: '38744743000149'),
+            serv: new ServicoDTO(
+                locPrest: new LocalPrestacaoDTO(cLocPrestacao: '3304557', cPaisPrestacao: '105'),
+                cServ: new CodigoServicoDTO(cTribNac: '1.01', xDescServ: 'Desc'),
+            ),
+            valores: new ValoresServicoDTO(vServ: '100.00', vLiq: '95.00'),
+            subst: $subst,
+        );
+
+        self::assertSame($subst, $dto->subst);
+    }
+
+    public function testConstructWithIntermediario(): void
+    {
+        $interm = new \NFSePHP\DTO\IntermediarioDTO(xNome: 'Intermediária LTDA', cnpj: '12345678000199');
+        $dto = new InfDpsDTO(
+            tpAmb: '2',
+            dhEmi: '2026-03-03T10:00:00-03:00',
+            serie: '1',
+            nDPS: '1',
+            dCompet: '2026-03-01',
+            tpEmit: '3',
+            cLocEmi: '3304557',
+            prest: new PrestadorDTO(regTrib: new RegimeTributarioDTO(), cnpj: '38744743000149'),
+            serv: new ServicoDTO(
+                locPrest: new LocalPrestacaoDTO(cLocPrestacao: '3304557', cPaisPrestacao: '105'),
+                cServ: new CodigoServicoDTO(cTribNac: '1.01', xDescServ: 'Desc'),
+            ),
+            valores: new ValoresServicoDTO(vServ: '100.00', vLiq: '95.00'),
+            interm: $interm,
+        );
+
+        self::assertSame($interm, $dto->interm);
     }
 }

@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Validation;
 
 final class CodigoServicoDTOTest extends TestCase
 {
-    public function test_construct_stores_required_fields(): void
+    public function testConstructStoresRequiredFields(): void
     {
         $dto = new CodigoServicoDTO(
             cTribNac: '1.01',
@@ -22,7 +22,7 @@ final class CodigoServicoDTOTest extends TestCase
         self::assertNull($dto->cIntContrib);
     }
 
-    public function test_construct_with_optional_fields(): void
+    public function testConstructWithOptionalFields(): void
     {
         $dto = new CodigoServicoDTO(
             cTribNac: '1.01',
@@ -37,7 +37,7 @@ final class CodigoServicoDTOTest extends TestCase
         self::assertSame('INT001', $dto->cIntContrib);
     }
 
-    public function test_json_serialize_returns_all_properties(): void
+    public function testJsonSerializeReturnsAllProperties(): void
     {
         $dto = new CodigoServicoDTO(cTribNac: '1.01', xDescServ: 'Desc');
 
@@ -48,14 +48,14 @@ final class CodigoServicoDTOTest extends TestCase
         self::assertArrayHasKey('xDescServ', $data);
     }
 
-    public function test_to_string_returns_json(): void
+    public function testToStringReturnsJson(): void
     {
         $dto = new CodigoServicoDTO(cTribNac: '1.01', xDescServ: 'Desc');
 
         self::assertJson((string) $dto);
     }
 
-    public function test_validation_fails_for_empty_c_trib_nac(): void
+    public function testValidationFailsForEmptyCTribNac(): void
     {
         $validator = Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator();
         $dto = new CodigoServicoDTO(cTribNac: '', xDescServ: 'Desc');

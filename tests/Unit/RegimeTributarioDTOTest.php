@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Validation;
 
 final class RegimeTributarioDTOTest extends TestCase
 {
-    public function test_construct_default_values(): void
+    public function testConstructDefaultValues(): void
     {
         $dto = new RegimeTributarioDTO();
 
@@ -17,7 +17,7 @@ final class RegimeTributarioDTOTest extends TestCase
         self::assertNull($dto->regApTribSN);
     }
 
-    public function test_construct_with_explicit_values(): void
+    public function testConstructWithExplicitValues(): void
     {
         $dto = new RegimeTributarioDTO(
             opSimpNac: '3',
@@ -30,7 +30,7 @@ final class RegimeTributarioDTOTest extends TestCase
         self::assertSame('2', $dto->regApTribSN);
     }
 
-    public function test_json_serialize_returns_all_properties(): void
+    public function testJsonSerializeReturnsAllProperties(): void
     {
         $dto = new RegimeTributarioDTO();
 
@@ -42,14 +42,14 @@ final class RegimeTributarioDTOTest extends TestCase
         self::assertArrayHasKey('regApTribSN', $data);
     }
 
-    public function test_to_string_returns_json(): void
+    public function testToStringReturnsJson(): void
     {
         $dto = new RegimeTributarioDTO();
 
         self::assertJson((string) $dto);
     }
 
-    public function test_validation_fails_for_invalid_op_simp_nac(): void
+    public function testValidationFailsForInvalidOpSimpNac(): void
     {
         $validator = Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator();
         $dto = new RegimeTributarioDTO(opSimpNac: '9', regEspTrib: '0');
@@ -59,7 +59,7 @@ final class RegimeTributarioDTOTest extends TestCase
         self::assertGreaterThan(0, $violations->count());
     }
 
-    public function test_validation_fails_for_invalid_reg_esp_trib(): void
+    public function testValidationFailsForInvalidRegEspTrib(): void
     {
         $validator = Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator();
         $dto = new RegimeTributarioDTO(opSimpNac: '1', regEspTrib: '99');

@@ -7,16 +7,16 @@ use PHPUnit\Framework\TestCase;
 
 final class EventoCancelamentoResponseDTOTest extends TestCase
 {
-    public function test_from_json_parses_success_response(): void
+    public function testFromJsonParsesSuccessResponse(): void
     {
         $json = <<<'JSON'
-        {
-            "tipoAmbiente": 2,
-            "versaoAplicativo": "SefinNacional_1.6.0",
-            "dataHoraProcessamento": "2026-02-27T19:31:59.0971392-03:00",
-            "eventoXmlGZipB64": "H4sIAAAAAAAA/6tWKkktLlGyUlAqSS0u0QHQPwgEAAAA"
-        }
-        JSON;
+            {
+                "tipoAmbiente": 2,
+                "versaoAplicativo": "SefinNacional_1.6.0",
+                "dataHoraProcessamento": "2026-02-27T19:31:59.0971392-03:00",
+                "eventoXmlGZipB64": "H4sIAAAAAAAA/6tWKkktLlGyUlAqSS0u0QHQPwgEAAAA"
+            }
+            JSON;
 
         $dto = EventoCancelamentoResponseDTO::fromJson($json);
 
@@ -26,16 +26,16 @@ final class EventoCancelamentoResponseDTOTest extends TestCase
         self::assertNotNull($dto->eventoXmlGZipB64);
     }
 
-    public function test_from_json_parses_error_response_without_evento_xml(): void
+    public function testFromJsonParsesErrorResponseWithoutEventoXml(): void
     {
         $json = <<<'JSON'
-        {
-            "tipoAmbiente": 2,
-            "versaoAplicativo": "SefinNacional_1.6.0",
-            "dataHoraProcessamento": "2026-02-27T19:31:59-03:00",
-            "erro": [{"codigo": "RNG6110", "descricao": "Falha Schema Xml"}]
-        }
-        JSON;
+            {
+                "tipoAmbiente": 2,
+                "versaoAplicativo": "SefinNacional_1.6.0",
+                "dataHoraProcessamento": "2026-02-27T19:31:59-03:00",
+                "erro": [{"codigo": "RNG6110", "descricao": "Falha Schema Xml"}]
+            }
+            JSON;
 
         $dto = EventoCancelamentoResponseDTO::fromJson($json);
 
@@ -43,7 +43,7 @@ final class EventoCancelamentoResponseDTOTest extends TestCase
         self::assertNull($dto->eventoXmlGZipB64);
     }
 
-    public function test_from_array_handles_missing_fields(): void
+    public function testFromArrayHandlesMissingFields(): void
     {
         $dto = EventoCancelamentoResponseDTO::fromArray([]);
 
@@ -53,7 +53,7 @@ final class EventoCancelamentoResponseDTOTest extends TestCase
         self::assertNull($dto->eventoXmlGZipB64);
     }
 
-    public function test_get_evento_xml_returns_null_when_no_base64(): void
+    public function testGetEventoXmlReturnsNullWhenNoBase64(): void
     {
         $dto = new EventoCancelamentoResponseDTO(
             tipoAmbiente: 2,
@@ -65,7 +65,7 @@ final class EventoCancelamentoResponseDTOTest extends TestCase
         self::assertNull($dto->getEventoXml());
     }
 
-    public function test_get_evento_xml_decodes_valid_gzip_base64(): void
+    public function testGetEventoXmlDecodesValidGzipBase64(): void
     {
         $xml = '<evento xmlns="http://www.sped.fazenda.gov.br/nfse"><test/></evento>';
         $gzip = gzencode($xml, 1);

@@ -4,6 +4,7 @@ namespace NFSePHP;
 
 use NFePHP\Common\Certificate as NFeCertificate;
 use NFePHP\Common\Signer;
+use NFSePHP\DTO\CodigoServicoDTO;
 use NFSePHP\DTO\DpsResponse;
 use NFSePHP\DTO\EnderecoDTO;
 use NFSePHP\DTO\EventoCancelamentoDTO;
@@ -12,9 +13,11 @@ use NFSePHP\DTO\EventoResponse;
 use NFSePHP\DTO\EventosConsultaDTO;
 use NFSePHP\DTO\EventosResponse;
 use NFSePHP\DTO\InfDpsDTO;
+use NFSePHP\DTO\IntermediarioDTO;
 use NFSePHP\DTO\PrestadorDTO;
 use NFSePHP\DTO\SefinNacionalResponse;
 use NFSePHP\DTO\ServicoDTO;
+use NFSePHP\DTO\SubstituicaoDTO;
 use NFSePHP\DTO\TomadorDTO;
 use NFSePHP\DTO\ValoresServicoDTO;
 use NFSePHP\Exception\InvalidXSDException;
@@ -444,34 +447,29 @@ class NFSeService
             'tpEmit' => $infDps->tpEmit,
         ];
 
-        // @TODO: Optional: cMotivoEmisTI (before cLocEmi)
         if (null !== $infDps->cMotivoEmisTI) {
             $result['cMotivoEmisTI'] = $infDps->cMotivoEmisTI;
         }
 
-        // @TODO: Optional: chNFSeRej (before cLocEmi)
         if (null !== $infDps->chNFSeRej) {
             $result['chNFSeRej'] = $infDps->chNFSeRej;
         }
 
         $result['cLocEmi'] = $infDps->cLocEmi;
 
-        // @TODO: Optional: subst (after cLocEmi, before prest)
-        // if (null !== $infDps->subst) {
-        //     $result['subst'] = $this->buildSubstituicao($infDps->subst);
-        // }
+        if (null !== $infDps->subst) {
+            $result['subst'] = $this->buildSubstituicao($infDps->subst);
+        }
 
         $result['prest'] = $this->buildPrestador($infDps->prest);
 
-        // Optional: toma (after prest, before serv)
         if (null !== $infDps->toma) {
             $result['toma'] = $this->buildTomador($infDps->toma);
         }
 
-        // @TODO: Optional: interm (after toma, before serv)
-        // if (null !== $infDps->interm) {
-        //     $result['interm'] = $this->buildIntermediario($infDps->interm);
-        // }
+        if (null !== $infDps->interm) {
+            $result['interm'] = $this->buildIntermediario($infDps->interm);
+        }
 
         $result['serv'] = $this->buildServico($infDps->serv);
 
@@ -487,72 +485,122 @@ class NFSeService
 
     private function buildPrestador(PrestadorDTO $prest): array
     {
-        // CNPJ/CPF/NIF/cNaoNIF (choice - one must be present)
-        $result['CNPJ'] = $prest->cnpj;
-        $result['CPF'] = $prest->cpf;
-        $result['NIF'] = $prest->nif;
-        $result['cNaoNIF'] = $prest->cNaoNIF;
+        // TCInfoPrestador XSD order: CNPJ|CPF|NIF|cNaoNIF (choice), CAEPF, IM, xNome, end, fone, email, regTrib
+        $result = [];
+        if (null !== $prest->cnpj && '' !== $prest->cnpj) {
+            $result['CNPJ'] = $prest->cnpj;
+        } elseif (null !== $prest->cpf && '' !== $prest->cpf) {
+            $result['CPF'] = $prest->cpf;
+        } elseif (null !== $prest->nif && '' !== $prest->nif) {
+            $result['NIF'] = $prest->nif;
+        } elseif (null !== $prest->cNaoNIF && '' !== $prest->cNaoNIF) {
+            $result['cNaoNIF'] = $prest->cNaoNIF;
+        }
 
-        // CAEPF (optional)
-        $result['CAEPF'] = $prest->caepf;
-
-        // IM (optional)
-        $result['IM'] = $prest->im;
-
-        // xNome (optional)
-        $result['xNome'] = $prest->xNome;
-
-        // end (optional)
+        if (null !== $prest->caepf && '' !== $prest->caepf) {
+            $result['CAEPF'] = $prest->caepf;
+        }
+        if (null !== $prest->im && '' !== $prest->im) {
+            $result['IM'] = $prest->im;
+        }
+        if (null !== $prest->xNome && '' !== $prest->xNome) {
+            $result['xNome'] = $prest->xNome;
+        }
         if (null !== $prest->end) {
             $result['end'] = $this->buildEndereco($prest->end);
         }
+        if (null !== $prest->fone && '' !== $prest->fone) {
+            $result['fone'] = $prest->fone;
+        }
+        if (null !== $prest->email && '' !== $prest->email) {
+            $result['email'] = $prest->email;
+        }
 
-        // fone (optional)
-        $result['fone'] = $prest->fone;
+        // regTrib (required) - TCRegTrib order: opSimpNac, regApTribSN, regEspTrib
+        $regTrib = ['opSimpNac' => $prest->regTrib->opSimpNac];
+        if (null !== $prest->regTrib->regApTribSN) {
+            $regTrib['regApTribSN'] = $prest->regTrib->regApTribSN;
+        }
+        $regTrib['regEspTrib'] = $prest->regTrib->regEspTrib;
+        $result['regTrib'] = $regTrib;
 
-        // email (optional)
-        $result['email'] = $prest->email;
+        return $result;
+    }
 
-        // regTrib (required) - must come last
-        $result['regTrib'] = [
-            'opSimpNac' => $prest->regTrib->opSimpNac,
-            'regEspTrib' => $prest->regTrib->regEspTrib,
-            'regApTribSN' => $prest->regTrib->regApTribSN,
+    private function buildSubstituicao(SubstituicaoDTO $subst): array
+    {
+        $result = [
+            'chSubstda' => $subst->chSubstda,
+            'cMotivo' => $subst->cMotivo,
         ];
+        if (null !== $subst->xMotivo) {
+            $result['xMotivo'] = $subst->xMotivo;
+        }
+
+        return $result;
+    }
+
+    private function buildIntermediario(IntermediarioDTO $interm): array
+    {
+        // TCInfoPessoa XSD order: CNPJ|CPF|NIF|cNaoNIF (choice), CAEPF, IM, xNome, end, fone, email
+        $result = [];
+        if (null !== $interm->cnpj && '' !== $interm->cnpj) {
+            $result['CNPJ'] = $interm->cnpj;
+        } elseif (null !== $interm->cpf && '' !== $interm->cpf) {
+            $result['CPF'] = $interm->cpf;
+        } elseif (null !== $interm->nif && '' !== $interm->nif) {
+            $result['NIF'] = $interm->nif;
+        } elseif (null !== $interm->cNaoNIF && '' !== $interm->cNaoNIF) {
+            $result['cNaoNIF'] = $interm->cNaoNIF;
+        }
+        if (null !== $interm->caepf && '' !== $interm->caepf) {
+            $result['CAEPF'] = $interm->caepf;
+        }
+        if (null !== $interm->im && '' !== $interm->im) {
+            $result['IM'] = $interm->im;
+        }
+        $result['xNome'] = $interm->xNome;
+        if (null !== $interm->end) {
+            $result['end'] = $this->buildEndereco($interm->end);
+        }
+        if (null !== $interm->fone && '' !== $interm->fone) {
+            $result['fone'] = $interm->fone;
+        }
+        if (null !== $interm->email && '' !== $interm->email) {
+            $result['email'] = $interm->email;
+        }
 
         return $result;
     }
 
     private function buildTomador(TomadorDTO $toma): array
     {
-        // Build in the exact order required by XSD schema (TCInfoPessoa)
-        // CNPJ/CPF/NIF/cNaoNIF (choice - one must be present)
-        $result['CNPJ'] = $toma->cnpj;
-        $result['CPF'] = $toma->cpf;
-        $result['NIF'] = $toma->nif;
-        $result['cNaoNIF'] = $toma->cNaoNIF;
+        // TCInfoPessoa XSD order: CNPJ|CPF|NIF|cNaoNIF (choice), CAEPF, IM, xNome, end, fone, email
+        $result = [];
+        if (null !== $toma->cnpj && '' !== $toma->cnpj) {
+            $result['CNPJ'] = $toma->cnpj;
+        } elseif (null !== $toma->cpf && '' !== $toma->cpf) {
+            $result['CPF'] = $toma->cpf;
+        } elseif (null !== $toma->nif && '' !== $toma->nif) {
+            $result['NIF'] = $toma->nif;
+        } elseif (null !== $toma->cNaoNIF && '' !== $toma->cNaoNIF) {
+            $result['cNaoNIF'] = $toma->cNaoNIF;
+        }
 
-        // CAEPF (optional)
-        $result['CAEPF'] = $toma->caepf;
-
-        // IM (optional)
-        $result['IM'] = $toma->im;
-
-        // xNome (required)
+        if (null !== $toma->caepf && '' !== $toma->caepf) {
+            $result['CAEPF'] = $toma->caepf;
+        }
+        if (null !== $toma->im && '' !== $toma->im) {
+            $result['IM'] = $toma->im;
+        }
         $result['xNome'] = $toma->xNome;
-
-        // end (optional)
         if (null !== $toma->end) {
             $result['end'] = $this->buildEndereco($toma->end);
         }
-
-        // fone (optional)
-        if (null !== $toma->fone) {
+        if (null !== $toma->fone && '' !== $toma->fone) {
             $result['fone'] = $toma->fone;
         }
-
-        // email (optional)
-        if (null !== $toma->email) {
+        if (null !== $toma->email && '' !== $toma->email) {
             $result['email'] = $toma->email;
         }
 

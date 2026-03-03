@@ -8,19 +8,19 @@ use PHPUnit\Framework\TestCase;
 
 final class DpsResponseTest extends TestCase
 {
-    public function test_is_http_success_true_for_2xx(): void
+    public function testIsHttpSuccessTrueFor2xx(): void
     {
         self::assertTrue((new DpsResponse(200, '{}', null))->isHttpSuccess());
         self::assertTrue((new DpsResponse(201, '{}', null))->isHttpSuccess());
     }
 
-    public function test_is_http_success_false_for_4xx_and_5xx(): void
+    public function testIsHttpSuccessFalseFor4xxAnd5xx(): void
     {
         self::assertFalse((new DpsResponse(400, '{}', null))->isHttpSuccess());
         self::assertFalse((new DpsResponse(500, '{}', null))->isHttpSuccess());
     }
 
-    public function test_has_parsed_response_true_when_sefin_dto_present(): void
+    public function testHasParsedResponseTrueWhenSefinDtoPresent(): void
     {
         $sefin = SefinNacionalResponse::fromArray([
             'tipoAmbiente' => 1,
@@ -34,7 +34,7 @@ final class DpsResponseTest extends TestCase
         self::assertSame($sefin, $response->response);
     }
 
-    public function test_has_parsed_response_false_when_body_not_json(): void
+    public function testHasParsedResponseFalseWhenBodyNotJson(): void
     {
         $response = new DpsResponse(200, '<html>error</html>', null);
 

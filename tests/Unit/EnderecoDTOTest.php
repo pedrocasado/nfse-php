@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Validation;
 
 final class EnderecoDTOTest extends TestCase
 {
-    public function test_construct_stores_all_properties(): void
+    public function testConstructStoresAllProperties(): void
     {
         $dto = new EnderecoDTO(
             xLgr: 'Rua das Flores',
@@ -24,7 +24,7 @@ final class EnderecoDTOTest extends TestCase
         self::assertNull($dto->endNac);
     }
 
-    public function test_construct_with_optional_fields(): void
+    public function testConstructWithOptionalFields(): void
     {
         $endNac = new EnderecoNacionalSimplificadoDTO(cMun: '3304557', CEP: '22451060');
         $dto = new EnderecoDTO(
@@ -39,7 +39,7 @@ final class EnderecoDTOTest extends TestCase
         self::assertSame($endNac, $dto->endNac);
     }
 
-    public function test_json_serialize_returns_all_properties(): void
+    public function testJsonSerializeReturnsAllProperties(): void
     {
         $dto = new EnderecoDTO(
             xLgr: 'Rua Teste',
@@ -58,7 +58,7 @@ final class EnderecoDTOTest extends TestCase
         self::assertSame('Rua Teste', $data['xLgr']);
     }
 
-    public function test_to_string_returns_json(): void
+    public function testToStringReturnsJson(): void
     {
         $dto = new EnderecoDTO(
             xLgr: 'Rua Teste',
@@ -73,7 +73,7 @@ final class EnderecoDTOTest extends TestCase
         self::assertSame('Rua Teste', $decoded['xLgr']);
     }
 
-    public function test_validation_fails_for_empty_x_lgr(): void
+    public function testValidationFailsForEmptyXLgr(): void
     {
         $validator = Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator();
         $dto = new EnderecoDTO(

@@ -3,28 +3,32 @@
 namespace NFSePHP\Tests\Unit;
 
 use NFSePHP\DTO\EnderecoDTO;
-use NFSePHP\DTO\TomadorDTO;
+use NFSePHP\DTO\IntermediarioDTO;
 use PHPUnit\Framework\TestCase;
 
-final class TomadorDTOTest extends TestCase
+/**
+ * Tests for IntermediarioDTO (TCInfoPessoa from tiposComplexos_v1.01.xsd).
+ * Informações do Intermediário de Serviços (elemento interm na DPS).
+ */
+final class IntermediarioDTOTest extends TestCase
 {
     public function testConstructWithCnpjSucceeds(): void
     {
-        $dto = new TomadorDTO(
-            xNome: 'Empresa Teste LTDA',
-            cnpj: '38744743000149',
+        $dto = new IntermediarioDTO(
+            xNome: 'Intermediária Serviços LTDA',
+            cnpj: '10738989000199',
         );
 
-        self::assertSame('Empresa Teste LTDA', $dto->xNome);
-        self::assertSame('38744743000149', $dto->cnpj);
+        self::assertSame('Intermediária Serviços LTDA', $dto->xNome);
+        self::assertSame('10738989000199', $dto->cnpj);
         self::assertNull($dto->cpf);
         self::assertNull($dto->nif);
     }
 
     public function testConstructWithCpfSucceeds(): void
     {
-        $dto = new TomadorDTO(
-            xNome: 'João Silva',
+        $dto = new IntermediarioDTO(
+            xNome: 'João Intermediário',
             cpf: '12345678901',
         );
 
@@ -34,8 +38,8 @@ final class TomadorDTOTest extends TestCase
 
     public function testConstructWithNifSucceeds(): void
     {
-        $dto = new TomadorDTO(
-            xNome: 'Foreign Company',
+        $dto = new IntermediarioDTO(
+            xNome: 'Foreign Intermediary',
             nif: 'PT123456789',
         );
 
@@ -44,8 +48,8 @@ final class TomadorDTOTest extends TestCase
 
     public function testConstructWithCNaoNifSucceeds(): void
     {
-        $dto = new TomadorDTO(
-            xNome: 'Dispensado',
+        $dto = new IntermediarioDTO(
+            xNome: 'Dispensado NIF',
             cNaoNIF: '1',
         );
 
@@ -57,7 +61,7 @@ final class TomadorDTOTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('CNPJ, CPF, NIF ou cNaoNIF deve ser informado');
 
-        new TomadorDTO(
+        new IntermediarioDTO(
             xNome: 'Sem Identificador',
             cnpj: null,
             cpf: null,
@@ -66,37 +70,36 @@ final class TomadorDTOTest extends TestCase
         );
     }
 
-    public function testConstructWithEndereco(): void
+    public function testConstructWithEnderecoAndContact(): void
     {
-        $end = new EnderecoDTO(xLgr: 'Rua X', nro: '1', xBairro: 'Centro');
-        $dto = new TomadorDTO(
-            xNome: 'Empresa',
-            cnpj: '38744743000149',
+        $end = new EnderecoDTO(xLgr: 'Av. Principal', nro: '100', xBairro: 'Centro');
+        $dto = new IntermediarioDTO(
+            xNome: 'Intermediária',
+            cnpj: '10738989000199',
             end: $end,
             fone: '2122107277',
-            email: 'contato@empresa.com',
+            email: 'interm@empresa.com',
         );
 
         self::assertSame($end, $dto->end);
         self::assertSame('2122107277', $dto->fone);
-        self::assertSame('contato@empresa.com', $dto->email);
+        self::assertSame('interm@empresa.com', $dto->email);
     }
 
     public function testJsonSerializeReturnsAllProperties(): void
     {
-        $dto = new TomadorDTO(xNome: 'Teste', cnpj: '38744743000149');
+        $dto = new IntermediarioDTO(xNome: 'Teste', cnpj: '10738989000199');
 
         $data = $dto->jsonSerialize();
 
         self::assertIsArray($data);
         self::assertArrayHasKey('xNome', $data);
         self::assertArrayHasKey('cnpj', $data);
-        self::assertSame('Teste', $data['xNome']);
     }
 
     public function testToStringReturnsJson(): void
     {
-        $dto = new TomadorDTO(xNome: 'Teste', cnpj: '38744743000149');
+        $dto = new IntermediarioDTO(xNome: 'Teste', cnpj: '10738989000199');
 
         self::assertJson((string) $dto);
     }

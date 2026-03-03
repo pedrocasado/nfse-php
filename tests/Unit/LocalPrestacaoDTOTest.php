@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Validation;
 
 final class LocalPrestacaoDTOTest extends TestCase
 {
-    public function test_construct_stores_properties(): void
+    public function testConstructStoresProperties(): void
     {
         $dto = new LocalPrestacaoDTO(
             cLocPrestacao: '3304557',
@@ -19,7 +19,7 @@ final class LocalPrestacaoDTOTest extends TestCase
         self::assertSame('105', $dto->cPaisPrestacao);
     }
 
-    public function test_json_serialize_returns_all_properties(): void
+    public function testJsonSerializeReturnsAllProperties(): void
     {
         $dto = new LocalPrestacaoDTO(cLocPrestacao: '3304557', cPaisPrestacao: '105');
 
@@ -31,14 +31,14 @@ final class LocalPrestacaoDTOTest extends TestCase
         self::assertSame('3304557', $data['cLocPrestacao']);
     }
 
-    public function test_to_string_returns_json(): void
+    public function testToStringReturnsJson(): void
     {
         $dto = new LocalPrestacaoDTO(cLocPrestacao: '3304557', cPaisPrestacao: '105');
 
         self::assertJson((string) $dto);
     }
 
-    public function test_validation_fails_for_blank_c_loc_prestacao(): void
+    public function testValidationFailsForBlankCLocPrestacao(): void
     {
         $validator = Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator();
         $dto = new LocalPrestacaoDTO(cLocPrestacao: '', cPaisPrestacao: '105');

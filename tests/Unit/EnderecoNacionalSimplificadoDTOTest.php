@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Validation;
 
 final class EnderecoNacionalSimplificadoDTOTest extends TestCase
 {
-    public function test_construct_stores_properties(): void
+    public function testConstructStoresProperties(): void
     {
         $dto = new EnderecoNacionalSimplificadoDTO(
             cMun: '3304557',
@@ -19,7 +19,7 @@ final class EnderecoNacionalSimplificadoDTOTest extends TestCase
         self::assertSame('22451060', $dto->CEP);
     }
 
-    public function test_json_serialize_returns_all_properties(): void
+    public function testJsonSerializeReturnsAllProperties(): void
     {
         $dto = new EnderecoNacionalSimplificadoDTO(cMun: '3304557', CEP: '22451060');
 
@@ -31,14 +31,14 @@ final class EnderecoNacionalSimplificadoDTOTest extends TestCase
         self::assertSame('3304557', $data['cMun']);
     }
 
-    public function test_to_string_returns_json(): void
+    public function testToStringReturnsJson(): void
     {
         $dto = new EnderecoNacionalSimplificadoDTO(cMun: '3304557', CEP: '22451060');
 
         self::assertJson((string) $dto);
     }
 
-    public function test_validation_fails_for_cep_wrong_length(): void
+    public function testValidationFailsForCepWrongLength(): void
     {
         $validator = Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator();
         $dto = new EnderecoNacionalSimplificadoDTO(cMun: '3304557', CEP: '1234567');

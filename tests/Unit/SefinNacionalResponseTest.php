@@ -8,19 +8,19 @@ use PHPUnit\Framework\TestCase;
 
 final class SefinNacionalResponseTest extends TestCase
 {
-    public function test_from_json_parses_success_response(): void
+    public function testFromJsonParsesSuccessResponse(): void
     {
         $json = <<<'JSON'
-        {
-            "tipoAmbiente": 1,
-            "versaoAplicativo": "SefinNacional_1.6.0",
-            "dataHoraProcessamento": "2026-02-27T15:05:21.4015763-03:00",
-            "idDps": "550e8400-e29b-41d4-a716-446655440000",
-            "chaveAcesso": "33045572238744743000149000000000001026029316934590",
-            "nfseXmlGZipB64": "H4sIAAAAAAAA/6tWKkktLlGyUlAqSS0u0QHQPwgEAAAA",
-            "alertas": []
-        }
-        JSON;
+            {
+                "tipoAmbiente": 1,
+                "versaoAplicativo": "SefinNacional_1.6.0",
+                "dataHoraProcessamento": "2026-02-27T15:05:21.4015763-03:00",
+                "idDps": "550e8400-e29b-41d4-a716-446655440000",
+                "chaveAcesso": "33045572238744743000149000000000001026029316934590",
+                "nfseXmlGZipB64": "H4sIAAAAAAAA/6tWKkktLlGyUlAqSS0u0QHQPwgEAAAA",
+                "alertas": []
+            }
+            JSON;
 
         $dto = SefinNacionalResponse::fromJson($json);
 
@@ -36,22 +36,22 @@ final class SefinNacionalResponseTest extends TestCase
         self::assertSame('550e8400-e29b-41d4-a716-446655440000', $dto->getNfseId());
     }
 
-    public function test_from_json_parses_error_response(): void
+    public function testFromJsonParsesErrorResponse(): void
     {
         $json = <<<'JSON'
-        {
-            "tipoAmbiente": 2,
-            "versaoAplicativo": "SefinNacional_1.6.0",
-            "dataHoraProcessamento": "2026-02-27T19:31:59.0971392-03:00",
-            "erros": [
-                {
-                    "Codigo": "RNG6110",
-                    "Descricao": "Falha Schema Xml",
-                    "Complemento": "The element 'infEvento' has invalid child element 'nDFe'."
-                }
-            ]
-        }
-        JSON;
+            {
+                "tipoAmbiente": 2,
+                "versaoAplicativo": "SefinNacional_1.6.0",
+                "dataHoraProcessamento": "2026-02-27T19:31:59.0971392-03:00",
+                "erros": [
+                    {
+                        "Codigo": "RNG6110",
+                        "Descricao": "Falha Schema Xml",
+                        "Complemento": "The element 'infEvento' has invalid child element 'nDFe'."
+                    }
+                ]
+            }
+            JSON;
 
         $dto = SefinNacionalResponse::fromJson($json);
 
@@ -67,7 +67,7 @@ final class SefinNacionalResponseTest extends TestCase
         self::assertSame('Falha Schema Xml', $erros[0]->descricao);
     }
 
-    public function test_from_array_parses_multiple_erros(): void
+    public function testFromArrayParsesMultipleErros(): void
     {
         $data = [
             'tipoAmbiente' => 2,
@@ -86,7 +86,7 @@ final class SefinNacionalResponseTest extends TestCase
         self::assertSame('ERR002', $dto->getErros()[1]->codigo);
     }
 
-    public function test_from_array_handles_missing_fields(): void
+    public function testFromArrayHandlesMissingFields(): void
     {
         $dto = SefinNacionalResponse::fromArray([]);
 
@@ -100,7 +100,7 @@ final class SefinNacionalResponseTest extends TestCase
         self::assertFalse($dto->isSuccess());
     }
 
-    public function test_is_success_false_when_nfse_xml_empty(): void
+    public function testIsSuccessFalseWhenNfseXmlEmpty(): void
     {
         $dto = new SefinNacionalResponse(
             tipoAmbiente: 1,
@@ -113,7 +113,7 @@ final class SefinNacionalResponseTest extends TestCase
         self::assertTrue($dto->isError());
     }
 
-    public function test_is_success_false_when_erros_not_empty(): void
+    public function testIsSuccessFalseWhenErrosNotEmpty(): void
     {
         $dto = new SefinNacionalResponse(
             tipoAmbiente: 1,
@@ -127,7 +127,7 @@ final class SefinNacionalResponseTest extends TestCase
         self::assertTrue($dto->isError());
     }
 
-    public function test_get_nfse_xml_returns_null_when_no_base64(): void
+    public function testGetNfseXmlReturnsNullWhenNoBase64(): void
     {
         $dto = new SefinNacionalResponse(
             tipoAmbiente: 1,
@@ -139,7 +139,7 @@ final class SefinNacionalResponseTest extends TestCase
         self::assertNull($dto->getNfseXml());
     }
 
-    public function test_get_nfse_xml_decodes_valid_gzip_base64(): void
+    public function testGetNfseXmlDecodesValidGzipBase64(): void
     {
         $xml = '<NFSe xmlns="http://www.sped.fazenda.gov.br/nfse"><infNFSe/></NFSe>';
         $gzip = gzencode($xml, 1);
@@ -155,22 +155,22 @@ final class SefinNacionalResponseTest extends TestCase
         self::assertSame($xml, $dto->getNfseXml());
     }
 
-    public function test_from_json_parses_error_with_erro_singular_and_lowercase_keys(): void
+    public function testFromJsonParsesErrorWithErroSingularAndLowercaseKeys(): void
     {
         $json = <<<'JSON'
-        {
-            "tipoAmbiente": 2,
-            "versaoAplicativo": "SefinNacional_1.6.0",
-            "dataHoraProcessamento": "2026-02-27T19:31:59.0971392-03:00",
-            "erro": [
-                {
-                    "codigo": "RNG6110",
-                    "descricao": "Falha Schema Xml",
-                    "complemento": "The 'Id' attribute is invalid."
-                }
-            ]
-        }
-        JSON;
+            {
+                "tipoAmbiente": 2,
+                "versaoAplicativo": "SefinNacional_1.6.0",
+                "dataHoraProcessamento": "2026-02-27T19:31:59.0971392-03:00",
+                "erro": [
+                    {
+                        "codigo": "RNG6110",
+                        "descricao": "Falha Schema Xml",
+                        "complemento": "The 'Id' attribute is invalid."
+                    }
+                ]
+            }
+            JSON;
 
         $dto = SefinNacionalResponse::fromJson($json);
 
@@ -180,7 +180,7 @@ final class SefinNacionalResponseTest extends TestCase
         self::assertSame('Falha Schema Xml', $dto->getErros()[0]->descricao);
     }
 
-    public function test_from_array_erro_item_missing_codigo_descricao(): void
+    public function testFromArrayErroItemMissingCodigoDescricao(): void
     {
         $data = [
             'tipoAmbiente' => 2,

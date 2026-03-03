@@ -15,7 +15,7 @@ final class EventoConsultaItemDTOTest extends TestCase
         'arquivoXml' => 'eG1sPmV4YW1wbGU8L3htbD4=',
     ];
 
-    public function test_from_array_parses_all_fields(): void
+    public function testFromArrayParsesAllFields(): void
     {
         $dto = EventoConsultaItemDTO::fromArray(self::SAMPLE);
 
@@ -26,7 +26,7 @@ final class EventoConsultaItemDTOTest extends TestCase
         self::assertSame('eG1sPmV4YW1wbGU8L3htbD4=', $dto->arquivoXml);
     }
 
-    public function test_from_array_handles_missing_fields(): void
+    public function testFromArrayHandlesMissingFields(): void
     {
         $dto = EventoConsultaItemDTO::fromArray([]);
 
@@ -37,7 +37,7 @@ final class EventoConsultaItemDTOTest extends TestCase
         self::assertSame('', $dto->arquivoXml);
     }
 
-    public function test_construct_stores_values(): void
+    public function testConstructStoresValues(): void
     {
         $dto = new EventoConsultaItemDTO(
             chaveAcesso: 'chave123',

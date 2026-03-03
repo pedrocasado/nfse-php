@@ -9,19 +9,22 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class CodigoServicoDTO implements \JsonSerializable
 {
+    /**
+     * TCCServ XSD order: cTribNac, cTribMun, xDescServ, cNBS, cIntContrib
+     * Constructor keeps xDescServ as 2nd param for backward compatibility with positional calls.
+     */
     public function __construct(
-        // https://www.gov.br/nfse/pt-br/mei-e-demais-empresas/codigos-de-tributacao-nacional-nbs
         #[Assert\NotBlank]
-        public readonly string $cTribNac, // Código tributação nacional
+        public readonly string $cTribNac,
 
         #[Assert\NotBlank]
-        public readonly string $xDescServ, // Descrição do serviço
+        public readonly string $xDescServ,
 
-        public readonly ?string $cNBS = null, // Código NBS
+        public readonly ?string $cNBS = null,
 
-        public readonly ?string $cTribMun = null, // Código tributação municipal
+        public readonly ?string $cTribMun = null,
 
-        public readonly ?string $cIntContrib = null, // Código internacional contribuição
+        public readonly ?string $cIntContrib = null, // Código interno contribuinte
     ) {
     }
 
@@ -32,6 +35,13 @@ class CodigoServicoDTO implements \JsonSerializable
 
     public function jsonSerialize(): array
     {
-        return get_object_vars($this);
+        // Return in TCCServ XSD order: cTribNac, cTribMun, xDescServ, cNBS, cIntContrib
+        return [
+            'cTribNac' => $this->cTribNac,
+            'cTribMun' => $this->cTribMun,
+            'xDescServ' => $this->xDescServ,
+            'cNBS' => $this->cNBS,
+            'cIntContrib' => $this->cIntContrib,
+        ];
     }
 }

@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Validation;
 
 final class ValoresServicoDTOTest extends TestCase
 {
-    public function test_construct_stores_required_fields(): void
+    public function testConstructStoresRequiredFields(): void
     {
         $dto = new ValoresServicoDTO(
             vServ: '250.00',
@@ -23,7 +23,7 @@ final class ValoresServicoDTOTest extends TestCase
         self::assertSame('0.00', $dto->vTotTribMun);
     }
 
-    public function test_construct_with_optional_fields(): void
+    public function testConstructWithOptionalFields(): void
     {
         $dto = new ValoresServicoDTO(
             vServ: '250.00',
@@ -40,7 +40,7 @@ final class ValoresServicoDTOTest extends TestCase
         self::assertSame('12.50', $dto->vISSQN);
     }
 
-    public function test_json_serialize_returns_all_properties(): void
+    public function testJsonSerializeReturnsAllProperties(): void
     {
         $dto = new ValoresServicoDTO(vServ: '100.00', vLiq: '95.00');
 
@@ -52,14 +52,14 @@ final class ValoresServicoDTOTest extends TestCase
         self::assertArrayHasKey('vTotTribFed', $data);
     }
 
-    public function test_to_string_returns_json(): void
+    public function testToStringReturnsJson(): void
     {
         $dto = new ValoresServicoDTO(vServ: '100.00', vLiq: '95.00');
 
         self::assertJson((string) $dto);
     }
 
-    public function test_validation_fails_for_empty_v_serv(): void
+    public function testValidationFailsForEmptyVServ(): void
     {
         $validator = Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator();
         $dto = new ValoresServicoDTO(vServ: '', vLiq: '100.00');
