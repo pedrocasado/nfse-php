@@ -53,9 +53,12 @@ class ValoresServicoDTO implements \JsonSerializable
         // 3 - Retido pelo Intermediario
         public readonly ?string $tpRetISSQN = null,
 
-        public readonly ?string $vTotTribFed = '0.00',
-        public readonly ?string $vTotTribEst = '0.00',
-        public readonly ?string $vTotTribMun = '0.00',
+        public readonly ?string $vTotTribFed = null,
+        public readonly ?string $vTotTribEst = null,
+        public readonly ?string $vTotTribMun = null,
+        public readonly ?string $pTotTribFed = null,
+        public readonly ?string $pTotTribEst = null,
+        public readonly ?string $pTotTribMun = null,
     ) {
     }
 

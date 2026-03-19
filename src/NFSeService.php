@@ -362,8 +362,29 @@ class NFSeService
 
     private function buildValores(ValoresServicoDTO $valores): array
     {
+        $hasPercentTotalTrib =
+            (null !== $valores->pTotTribFed && '' !== $valores->pTotTribFed) ||
+            (null !== $valores->pTotTribEst && '' !== $valores->pTotTribEst) ||
+            (null !== $valores->pTotTribMun && '' !== $valores->pTotTribMun);
+
+        // XSD TCTribTotal is a choice: use either vTotTrib (monetary) or pTotTrib (percentage).
+        $totTrib = $hasPercentTotalTrib
+            ? [
+                'pTotTrib' => [
+                    'pTotTribFed' => $valores->pTotTribFed ?? '0.00',
+                    'pTotTribEst' => $valores->pTotTribEst ?? '0.00',
+                    'pTotTribMun' => $valores->pTotTribMun ?? '0.00',
+                ],
+            ]
+            : [
+                'vTotTrib' => [
+                    'vTotTribFed' => $valores->vTotTribFed ?? '0.00',
+                    'vTotTribEst' => $valores->vTotTribEst ?? '0.00',
+                    'vTotTribMun' => $valores->vTotTribMun ?? '0.00',
+                ],
+            ];
+
         return [
-            // 1
             'vServPrest' => [
                 'vServ' => $valores->vServ,
             ],
@@ -378,13 +399,7 @@ class NFSeService
                     'tribISSQN' => $valores->tribISSQN, // Default: Operação tributável
                     'tpRetISSQN' => $valores->tpRetISSQN, // Default: Não Retido (1 - Não Retido; 2 - Retido pelo Tomador; 3 - Retido pelo Intermediario)
                 ],
-                'totTrib' => [
-                    'vTotTrib' => [
-                        'vTotTribFed' => $valores->vTotTribFed, // Tributos federais
-                        'vTotTribEst' => $valores->vTotTribEst, // Tributos estaduais
-                        'vTotTribMun' => $valores->vTotTribMun, // Tributos municipais
-                    ],
-                ],
+                'totTrib' => $totTrib,
             ],
 
             // 'pAliqAplic' => $valores->pAliqAplic,

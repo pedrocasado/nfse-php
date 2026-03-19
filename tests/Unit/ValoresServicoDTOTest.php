@@ -18,9 +18,12 @@ final class ValoresServicoDTOTest extends TestCase
         self::assertSame('250.00', $dto->vServ);
         self::assertSame('237.50', $dto->vLiq);
         self::assertNull($dto->vBC);
-        self::assertSame('0.00', $dto->vTotTribFed);
-        self::assertSame('0.00', $dto->vTotTribEst);
-        self::assertSame('0.00', $dto->vTotTribMun);
+        self::assertSame(null, $dto->vTotTribFed);
+        self::assertSame(null, $dto->vTotTribEst);
+        self::assertSame(null, $dto->vTotTribMun);
+        self::assertNull($dto->pTotTribFed);
+        self::assertNull($dto->pTotTribEst);
+        self::assertNull($dto->pTotTribMun);
     }
 
     public function testConstructWithOptionalFields(): void
@@ -32,12 +35,18 @@ final class ValoresServicoDTOTest extends TestCase
             vDescIncond: '10.00',
             pAliqAplic: '5.00',
             vISSQN: '12.50',
+            pTotTribFed: '8.50',
+            pTotTribEst: '3.25',
+            pTotTribMun: '1.10',
         );
 
         self::assertSame('250.00', $dto->vBC);
         self::assertSame('10.00', $dto->vDescIncond);
         self::assertSame('5.00', $dto->pAliqAplic);
         self::assertSame('12.50', $dto->vISSQN);
+        self::assertSame('8.50', $dto->pTotTribFed);
+        self::assertSame('3.25', $dto->pTotTribEst);
+        self::assertSame('1.10', $dto->pTotTribMun);
     }
 
     public function testJsonSerializeReturnsAllProperties(): void
@@ -50,6 +59,7 @@ final class ValoresServicoDTOTest extends TestCase
         self::assertArrayHasKey('vServ', $data);
         self::assertArrayHasKey('vLiq', $data);
         self::assertArrayHasKey('vTotTribFed', $data);
+        self::assertArrayHasKey('pTotTribFed', $data);
     }
 
     public function testToStringReturnsJson(): void
