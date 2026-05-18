@@ -28,9 +28,9 @@
         "ext-openssl": "*",
         "ext-xml": "*",
         "ext-zlib": "*",
-        "symfony/serializer": "^7.4",
-        "symfony/http-client": "^7.4",
-        "symfony/validator": "^7.4",
+        "symfony/serializer": "^7.4|^8.0",
+        "symfony/http-client": "^7.4|^8.0",
+        "symfony/validator": "^7.4|^8.0",
         "nfephp-org/sped-common": "^5.1",
         "psr/log": "^3.0"
     },
